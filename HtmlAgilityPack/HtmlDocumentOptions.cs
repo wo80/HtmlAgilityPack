@@ -9,6 +9,11 @@ namespace HtmlAgilityPack
     public class HtmlDocumentOptions
     {
         /// <summary>
+        /// Defines the default stream encoding to use. Default is UTF8.
+        /// </summary>
+        public static Encoding DefaultStreamEncoding = Encoding.UTF8;
+
+        /// <summary>
         /// Adds Debugging attributes to node. Default is false.
         /// </summary>
         public bool AddDebuggingAttributes;
@@ -24,11 +29,6 @@ namespace HtmlAgilityPack
         /// </summary>
         public bool CheckSyntax = true;
 
-
-        /// <summary>
-        /// Defines the default stream encoding to use. Default is System.Text.Encoding.Default.
-        /// </summary>
-        public Encoding DefaultStreamEncoding;
         /// <summary>
         /// Defines if source text must be extracted while parsing errors.
         /// If the document has a lot of errors, or cascading errors, parsing performance can be dramatically affected if set to true.

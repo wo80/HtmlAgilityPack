@@ -340,8 +340,7 @@ namespace HtmlAgilityPack
 			}
 			set
 			{
-				HtmlDocument doc = new HtmlDocument();
-				doc.LoadHtml(value);
+                var doc = HtmlDocument.LoadHtml(value);
 
 				RemoveAllChildren();
 				AppendChildren(doc.DocumentNode.ChildNodes);
@@ -559,8 +558,7 @@ namespace HtmlAgilityPack
 		public static HtmlNode CreateNode(string html)
 		{
 			// REVIEW: this is *not* optimum...
-			HtmlDocument doc = new HtmlDocument();
-			doc.LoadHtml(html);
+			var doc = HtmlDocument.LoadHtml(html);
 			return doc.DocumentNode.FirstChild;
 		}
 

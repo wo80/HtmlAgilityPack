@@ -62,12 +62,6 @@ namespace HtmlAgilityPack
 		public HtmlDocument()
 		{
 			_documentnode = CreateNode(HtmlNodeType.Document, 0);
-#if SILVERLIGHT || METRO
-            Options.DefaultStreamEncoding =Encoding.UTF8;
-#else
-            Options.DefaultStreamEncoding = Encoding.Default;
-#endif
-
 		}
 
         #endregion
@@ -144,9 +138,243 @@ namespace HtmlAgilityPack
 
 		#endregion
 
-		#region Public Methods
+        #region Public static methods
 
-		/// <summary>
+        /// <summary>
+        /// Loads an HTML document from a stream.
+        /// </summary>
+        /// <param name="stream">The input stream.</param>
+        public static HtmlDocument Load(Stream stream)
+        {
+            return Load(new StreamReader(stream, HtmlDocumentOptions.DefaultStreamEncoding));
+        }
+
+        /// <summary>
+        /// Loads an HTML document from a stream.
+        /// </summary>
+        /// <param name="stream">The input stream.</param>
+        /// <param name="detectEncodingFromByteOrderMarks">Indicates whether to look for byte order marks at the beginning of the stream.</param>
+        public static HtmlDocument Load(Stream stream, bool detectEncodingFromByteOrderMarks)
+        {
+            return Load(new StreamReader(stream, detectEncodingFromByteOrderMarks));
+        }
+
+        /// <summary>
+        /// Loads an HTML document from a stream.
+        /// </summary>
+        /// <param name="stream">The input stream.</param>
+        /// <param name="encoding">The character encoding to use.</param>
+        public static HtmlDocument Load(Stream stream, Encoding encoding)
+        {
+            return Load(new StreamReader(stream, encoding));
+        }
+
+        /// <summary>
+        /// Loads an HTML document from a stream.
+        /// </summary>
+        /// <param name="stream">The input stream.</param>
+        /// <param name="encoding">The character encoding to use.</param>
+        /// <param name="detectEncodingFromByteOrderMarks">Indicates whether to look for byte order marks at the beginning of the stream.</param>
+        public static HtmlDocument Load(Stream stream, Encoding encoding, bool detectEncodingFromByteOrderMarks)
+        {
+            return Load(new StreamReader(stream, encoding, detectEncodingFromByteOrderMarks));
+        }
+
+        /// <summary>
+        /// Loads an HTML document from a stream.
+        /// </summary>
+        /// <param name="stream">The input stream.</param>
+        /// <param name="encoding">The character encoding to use.</param>
+        /// <param name="detectEncodingFromByteOrderMarks">Indicates whether to look for byte order marks at the beginning of the stream.</param>
+        /// <param name="buffersize">The minimum buffer size.</param>
+        public static HtmlDocument Load(Stream stream, Encoding encoding, bool detectEncodingFromByteOrderMarks, int buffersize)
+        {
+            return Load(new StreamReader(stream, encoding, detectEncodingFromByteOrderMarks, buffersize));
+        }
+
+
+        /// <summary>
+        /// Loads the HTML document from the specified TextReader.
+        /// </summary>
+        /// <param name="reader">The TextReader used to feed the HTML data into the document. May not be null.</param>
+        public static HtmlDocument Load(TextReader reader)
+        {
+            // all Load methods pass down to this one
+            if (reader == null)
+            {
+                throw new ArgumentNullException("reader");
+            }
+
+            var doc = new HtmlDocument();
+            var options = doc.Options;
+
+            doc._onlyDetectEncoding = false;
+
+            if (options.CheckSyntax)
+            {
+                doc.Openednodes = new Dictionary<int, HtmlNode>();
+            }
+            else
+            {
+                doc.Openednodes = null;
+            }
+
+            if (options.UseIdAttribute)
+            {
+                doc.Nodesid = new Dictionary<string, HtmlNode>();
+            }
+            else
+            {
+                doc.Nodesid = null;
+            }
+
+            StreamReader sr = reader as StreamReader;
+            if (sr != null)
+            {
+                try
+                {
+                    // trigger bom read if needed
+                    sr.Peek();
+                }
+                // ReSharper disable EmptyGeneralCatchClause
+                catch (Exception)
+                // ReSharper restore EmptyGeneralCatchClause
+                {
+                    // void on purpose
+                }
+                doc._streamencoding = sr.CurrentEncoding;
+            }
+            else
+            {
+                doc._streamencoding = null;
+            }
+            doc._declaredencoding = null;
+
+            doc.Text = reader.ReadToEnd();
+            doc._documentnode = doc.CreateNode(HtmlNodeType.Document, 0);
+            doc.Parse();
+
+            if (!options.CheckSyntax || doc.Openednodes == null) return doc;
+            foreach (HtmlNode node in doc.Openednodes.Values)
+            {
+                if (!node._starttag) // already reported
+                {
+                    continue;
+                }
+
+                string html;
+                if (options.ExtractErrorSourceText)
+                {
+                    html = node.OuterHtml;
+                    if (html.Length > options.ExtractErrorSourceTextMaxLength)
+                    {
+                        html = html.Substring(0, options.ExtractErrorSourceTextMaxLength);
+                    }
+                }
+                else
+                {
+                    html = string.Empty;
+                }
+                doc.AddError(
+                    HtmlParseErrorCode.TagNotClosed,
+                    node._line, node._lineposition,
+                    node._streamposition, html,
+                    "End tag </" + node.Name + "> was not found");
+            }
+
+            // we don't need this anymore
+            doc.Openednodes.Clear();
+
+            return doc;
+        }
+
+        /// <summary>
+        /// Loads the HTML document from the specified string.
+        /// </summary>
+        /// <param name="html">String containing the HTML document to load. May not be null.</param>
+        public static HtmlDocument LoadHtml(string html)
+        {
+            if (html == null)
+            {
+                throw new ArgumentNullException("html");
+            }
+            using (StringReader sr = new StringReader(html))
+            {
+                return Load(sr);
+            }
+        }
+
+        #endregion
+
+        #region Public methods
+
+        /// <summary>
+        /// Saves the HTML document to the specified stream.
+        /// </summary>
+        /// <param name="outStream">The stream to which you want to save.</param>
+        public void Save(Stream outStream)
+        {
+            StreamWriter sw = new StreamWriter(outStream, GetOutEncoding());
+            Save(sw);
+        }
+
+        /// <summary>
+        /// Saves the HTML document to the specified stream.
+        /// </summary>
+        /// <param name="outStream">The stream to which you want to save. May not be null.</param>
+        /// <param name="encoding">The character encoding to use. May not be null.</param>
+        public void Save(Stream outStream, Encoding encoding)
+        {
+            if (outStream == null)
+            {
+                throw new ArgumentNullException("outStream");
+            }
+            if (encoding == null)
+            {
+                throw new ArgumentNullException("encoding");
+            }
+            StreamWriter sw = new StreamWriter(outStream, encoding);
+            Save(sw);
+        }
+
+
+        /// <summary>
+        /// Saves the HTML document to the specified StreamWriter.
+        /// </summary>
+        /// <param name="writer">The StreamWriter to which you want to save.</param>
+        public void Save(StreamWriter writer)
+        {
+            Save((TextWriter)writer);
+        }
+
+        /// <summary>
+        /// Saves the HTML document to the specified TextWriter.
+        /// </summary>
+        /// <param name="writer">The TextWriter to which you want to save. May not be null.</param>
+        public void Save(TextWriter writer)
+        {
+            if (writer == null)
+            {
+                throw new ArgumentNullException("writer");
+            }
+
+            (new HtmlWriter(this)).WriteTo(writer, DocumentNode);
+
+            writer.Flush();
+        }
+
+        /// <summary>
+        /// Saves the HTML document to the specified XmlWriter.
+        /// </summary>
+        /// <param name="writer">The XmlWriter to which you want to save.</param>
+        public void Save(XmlWriter writer)
+        {
+            (new HtmlWriter(this)).WriteTo(writer, DocumentNode);
+
+            writer.Flush();
+        }
+
+        /// <summary>
 		/// Determines if the specified character is considered as a whitespace character.
 		/// </summary>
 		/// <param name="c">The character to check.</param>
@@ -276,225 +504,6 @@ namespace HtmlAgilityPack
 			return Nodesid.ContainsKey(id.ToLower()) ? Nodesid[id.ToLower()] : null;
 		}
 
-		/// <summary>
-		/// Loads an HTML document from a stream.
-		/// </summary>
-		/// <param name="stream">The input stream.</param>
-		public void Load(Stream stream)
-		{
-            Load(new StreamReader(stream, Options.DefaultStreamEncoding));
-		}
-
-		/// <summary>
-		/// Loads an HTML document from a stream.
-		/// </summary>
-		/// <param name="stream">The input stream.</param>
-		/// <param name="detectEncodingFromByteOrderMarks">Indicates whether to look for byte order marks at the beginning of the stream.</param>
-		public void Load(Stream stream, bool detectEncodingFromByteOrderMarks)
-		{
-			Load(new StreamReader(stream, detectEncodingFromByteOrderMarks));
-		}
-
-		/// <summary>
-		/// Loads an HTML document from a stream.
-		/// </summary>
-		/// <param name="stream">The input stream.</param>
-		/// <param name="encoding">The character encoding to use.</param>
-		public void Load(Stream stream, Encoding encoding)
-		{
-			Load(new StreamReader(stream, encoding));
-		}
-
-		/// <summary>
-		/// Loads an HTML document from a stream.
-		/// </summary>
-		/// <param name="stream">The input stream.</param>
-		/// <param name="encoding">The character encoding to use.</param>
-		/// <param name="detectEncodingFromByteOrderMarks">Indicates whether to look for byte order marks at the beginning of the stream.</param>
-		public void Load(Stream stream, Encoding encoding, bool detectEncodingFromByteOrderMarks)
-		{
-			Load(new StreamReader(stream, encoding, detectEncodingFromByteOrderMarks));
-		}
-
-		/// <summary>
-		/// Loads an HTML document from a stream.
-		/// </summary>
-		/// <param name="stream">The input stream.</param>
-		/// <param name="encoding">The character encoding to use.</param>
-		/// <param name="detectEncodingFromByteOrderMarks">Indicates whether to look for byte order marks at the beginning of the stream.</param>
-		/// <param name="buffersize">The minimum buffer size.</param>
-		public void Load(Stream stream, Encoding encoding, bool detectEncodingFromByteOrderMarks, int buffersize)
-		{
-			Load(new StreamReader(stream, encoding, detectEncodingFromByteOrderMarks, buffersize));
-		}
-
-
-		/// <summary>
-		/// Loads the HTML document from the specified TextReader.
-		/// </summary>
-		/// <param name="reader">The TextReader used to feed the HTML data into the document. May not be null.</param>
-		public void Load(TextReader reader)
-		{
-			// all Load methods pass down to this one
-			if (reader == null)
-				throw new ArgumentNullException("reader");
-
-			_onlyDetectEncoding = false;
-
-            if (Options.CheckSyntax)
-				Openednodes = new Dictionary<int, HtmlNode>();
-			else
-				Openednodes = null;
-
-            if (Options.UseIdAttribute)
-			{
-				Nodesid = new Dictionary<string, HtmlNode>();
-			}
-			else
-			{
-				Nodesid = null;
-			}
-
-			StreamReader sr = reader as StreamReader;
-			if (sr != null)
-			{
-				try
-				{
-					// trigger bom read if needed
-					sr.Peek();
-				}
-				// ReSharper disable EmptyGeneralCatchClause
-				catch (Exception)
-				// ReSharper restore EmptyGeneralCatchClause
-				{
-					// void on purpose
-				}
-				_streamencoding = sr.CurrentEncoding;
-			}
-			else
-			{
-				_streamencoding = null;
-			}
-			_declaredencoding = null;
-
-			Text = reader.ReadToEnd();
-			_documentnode = CreateNode(HtmlNodeType.Document, 0);
-			Parse();
-
-            if (!Options.CheckSyntax || Openednodes == null) return;
-			foreach (HtmlNode node in Openednodes.Values)
-			{
-				if (!node._starttag) // already reported
-				{
-					continue;
-				}
-
-				string html;
-                if (Options.ExtractErrorSourceText)
-				{
-					html = node.OuterHtml;
-                    if (html.Length > Options.ExtractErrorSourceTextMaxLength)
-					{
-                        html = html.Substring(0, Options.ExtractErrorSourceTextMaxLength);
-					}
-				}
-				else
-				{
-					html = string.Empty;
-				}
-				AddError(
-					HtmlParseErrorCode.TagNotClosed,
-					node._line, node._lineposition,
-					node._streamposition, html,
-					"End tag </" + node.Name + "> was not found");
-			}
-
-			// we don't need this anymore
-			Openednodes.Clear();
-		}
-
-		/// <summary>
-		/// Loads the HTML document from the specified string.
-		/// </summary>
-		/// <param name="html">String containing the HTML document to load. May not be null.</param>
-		public void LoadHtml(string html)
-		{
-			if (html == null)
-			{
-				throw new ArgumentNullException("html");
-			}
-            using (StringReader sr = new StringReader(html))
-            {
-                Load(sr);
-            }
-		}
-
-		/// <summary>
-		/// Saves the HTML document to the specified stream.
-		/// </summary>
-		/// <param name="outStream">The stream to which you want to save.</param>
-		public void Save(Stream outStream)
-		{
-			StreamWriter sw = new StreamWriter(outStream, GetOutEncoding());
-			Save(sw);
-		}
-
-		/// <summary>
-		/// Saves the HTML document to the specified stream.
-		/// </summary>
-		/// <param name="outStream">The stream to which you want to save. May not be null.</param>
-		/// <param name="encoding">The character encoding to use. May not be null.</param>
-		public void Save(Stream outStream, Encoding encoding)
-		{
-			if (outStream == null)
-			{
-				throw new ArgumentNullException("outStream");
-			}
-			if (encoding == null)
-			{
-				throw new ArgumentNullException("encoding");
-			}
-			StreamWriter sw = new StreamWriter(outStream, encoding);
-			Save(sw);
-		}
-
-
-		/// <summary>
-		/// Saves the HTML document to the specified StreamWriter.
-		/// </summary>
-		/// <param name="writer">The StreamWriter to which you want to save.</param>
-		public void Save(StreamWriter writer)
-		{
-			Save((TextWriter)writer);
-		}
-
-		/// <summary>
-		/// Saves the HTML document to the specified TextWriter.
-		/// </summary>
-		/// <param name="writer">The TextWriter to which you want to save. May not be null.</param>
-		public void Save(TextWriter writer)
-		{
-			if (writer == null)
-			{
-				throw new ArgumentNullException("writer");
-			}
-
-            (new HtmlWriter(this)).WriteTo(writer, DocumentNode);
-
-            writer.Flush();
-		}
-
-		/// <summary>
-		/// Saves the HTML document to the specified XmlWriter.
-		/// </summary>
-		/// <param name="writer">The XmlWriter to which you want to save.</param>
-		public void Save(XmlWriter writer)
-        {
-            (new HtmlWriter(this)).WriteTo(writer, DocumentNode);
-
-			writer.Flush();
-		}
-
 		#endregion
 
 		#region Internal Methods
@@ -527,7 +536,7 @@ namespace HtmlAgilityPack
 		internal Encoding GetOutEncoding()
 		{
 			// when unspecified, use the stream encoding first
-            return _declaredencoding ?? (_streamencoding ?? Options.DefaultStreamEncoding);
+            return _declaredencoding ?? (_streamencoding ?? HtmlDocumentOptions.DefaultStreamEncoding);
 		}
 
 		internal HtmlNode GetXmlDeclaration()
