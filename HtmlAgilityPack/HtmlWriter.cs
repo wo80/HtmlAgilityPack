@@ -346,13 +346,16 @@ namespace HtmlAgilityPack
                 return;
             }
 
-            /*
             if (!closing)
             {
                 if (attributes != null)
+                {
                     foreach (HtmlAttribute att in attributes)
+                    {
                         WriteAttribute(writer, att);
-
+                    }
+                }
+                /*
                 if (!_document.Options.AddDebuggingAttributes) return;
 
                 WriteAttribute(writer, _document.CreateAttribute("_closed", Closed.ToString()));
@@ -365,21 +368,28 @@ namespace HtmlAgilityPack
                                                                            n.Name));
                     i++;
                 }
+                //*/
             }
             else
             {
-                if (_endnode == null || _endnode._attributes == null || _endnode == this)
+                var endnode = node._endnode;
+                if (endnode == null || endnode._attributes == null || endnode == node)
+                {
                     return;
+                }
 
-                foreach (HtmlAttribute att in _endnode._attributes)
+                foreach (HtmlAttribute att in endnode._attributes)
+                {
                     WriteAttribute(writer, att);
+                }
 
+                /*
                 if (!_document.Options.AddDebuggingAttributes) return;
 
                 WriteAttribute(writer, _document.CreateAttribute("_closed", Closed.ToString()));
                 WriteAttribute(writer, _document.CreateAttribute("_children", ChildNodes.Count.ToString()));
+                //*/
             }
-            //*/
         }
 
         /// <summary>
