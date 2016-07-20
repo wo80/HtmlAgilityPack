@@ -14,11 +14,7 @@ namespace HtmlAgilityPack
 	[DebuggerDisplay("Name: {OriginalName}")]
 	public class HtmlNode
 	{
-        #region Consts
         internal const string DepthLevelExceptionMessage = "The document is too complex to parse";
-        #endregion
-
-        #region Fields
 
         internal HtmlAttributeCollection _attributes;
 		internal HtmlNodeCollection _childnodes;
@@ -45,8 +41,6 @@ namespace HtmlAgilityPack
 		internal HtmlNode _prevwithsamename;
 		internal bool _starttag;
 		internal int _streamposition;
-
-		#endregion
 
 		#region Static Members
 
@@ -80,8 +74,9 @@ namespace HtmlAgilityPack
 		/// </summary>
 		static HtmlNode()
 		{
-			// tags whose content may be anything
 			ElementsFlags = new Dictionary<string, HtmlElementFlag>();
+
+			// tags whose content may be anything
 			ElementsFlags.Add("script", HtmlElementFlag.CData);
 			ElementsFlags.Add("style", HtmlElementFlag.CData);
 			ElementsFlags.Add("noxhtml", HtmlElementFlag.CData);
@@ -99,13 +94,15 @@ namespace HtmlAgilityPack
 			ElementsFlags.Add("frame", HtmlElementFlag.Empty);
 			ElementsFlags.Add("wbr", HtmlElementFlag.Empty);
 			ElementsFlags.Add("bgsound", HtmlElementFlag.Empty);
+            ElementsFlags.Add("source", HtmlElementFlag.Empty);
+            ElementsFlags.Add("track", HtmlElementFlag.Empty);
 			ElementsFlags.Add("spacer", HtmlElementFlag.Empty);
 			ElementsFlags.Add("keygen", HtmlElementFlag.Empty);
 			ElementsFlags.Add("area", HtmlElementFlag.Empty);
 			ElementsFlags.Add("input", HtmlElementFlag.Empty);
 			ElementsFlags.Add("basefont", HtmlElementFlag.Empty);
 
-			ElementsFlags.Add("form", HtmlElementFlag.CanOverlap | HtmlElementFlag.Empty);
+			//! ElementsFlags.Add("form", HtmlElementFlag.CanOverlap | HtmlElementFlag.Empty);
 
 			// they sometimes contain, and sometimes they don 't...
 			ElementsFlags.Add("option", HtmlElementFlag.Empty);
@@ -115,7 +112,7 @@ namespace HtmlAgilityPack
 			// <p>bla<p>bla will be transformed into <p>bla<p>bla and not <p>bla></p><p>bla</p> or <p>bla<p>bla</p></p>
 			//<br> see above
 			ElementsFlags.Add("br", HtmlElementFlag.Empty | HtmlElementFlag.Closed);
-			ElementsFlags.Add("p", HtmlElementFlag.Empty | HtmlElementFlag.Closed);
+			//? ElementsFlags.Add("p", HtmlElementFlag.Empty | HtmlElementFlag.Closed);
 		}
 
 		/// <summary>
