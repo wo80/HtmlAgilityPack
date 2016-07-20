@@ -21,7 +21,7 @@ namespace HtmlAgilityPack.Tests
 			doc.LoadHtml(html);
 			var div = doc.DocumentNode.Descendants("div").FirstOrDefault();
 			var writer = new StringWriter();
-			div.WriteAttributes(writer, false);
+            (new HtmlWriter(doc)).WriteAttributes(writer, div, false);
 			var result = writer.GetStringBuilder().ToString();
 			Assert.AreEqual(" AttributeIsThis=\"val\"", result);
 		}
