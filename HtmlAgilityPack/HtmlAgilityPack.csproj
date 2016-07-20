@@ -58,7 +58,6 @@
     <Compile Include="HtmlParseError.cs" />
     <Compile Include="HtmlParseErrorCode.cs" />
     <Compile Include="HtmlTextNode.cs" />
-    <Compile Include="IOLibrary.cs" />
     <Compile Include="crc32.cs" />
     <Compile Include="NameValuePairList.cs" />
     <Compile Include="HtmlAttribute.cs" />
