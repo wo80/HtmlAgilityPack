@@ -3,6 +3,7 @@ namespace HtmlAgilityPack
 {
     using System;
     using System.IO;
+    using System.Text.RegularExpressions;
     using System.Xml;
 
     /// <summary>
@@ -119,7 +120,7 @@ namespace HtmlAgilityPack
 
                 case HtmlNodeType.Text:
                     html = ((HtmlTextNode)node).Text;
-                    writer.Write(_document.OptionOutputAsXml ? HtmlDocument.HtmlEncode(html) : html);
+                    writer.Write(_document.OptionOutputAsXml ? HtmlEncode(html) : html);
                     break;
 
                 case HtmlNodeType.Element:
@@ -300,7 +301,7 @@ namespace HtmlAgilityPack
                 if (_document.OptionOutputOriginalCase)
                     name = att.OriginalName;
 
-                writer.Write(" " + name + "=" + quote + HtmlDocument.HtmlEncode(att.XmlValue) + quote);
+                writer.Write(" " + name + "=" + quote + HtmlEncode(att.XmlValue) + quote);
             }
             else
             {
@@ -379,6 +380,22 @@ namespace HtmlAgilityPack
                 WriteAttribute(writer, _document.CreateAttribute("_children", ChildNodes.Count.ToString()));
             }
             //*/
+        }
+
+        /// <summary>
+        /// Applies HTML encoding to a specified string.
+        /// </summary>
+        /// <param name="html">The input string to encode. May not be null.</param>
+        /// <returns>The encoded string.</returns>
+        public static string HtmlEncode(string html)
+        {
+            if (html == null)
+            {
+                throw new ArgumentNullException("html");
+            }
+            // replace & by &amp; but only once!
+            Regex rx = new Regex("&(?!(amp;)|(lt;)|(gt;)|(quot;))", RegexOptions.IgnoreCase);
+            return rx.Replace(html, "&amp;").Replace("<", "&lt;").Replace(">", "&gt;").Replace("\"", "&quot;");
         }
     }
 }

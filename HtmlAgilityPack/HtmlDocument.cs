@@ -268,22 +268,6 @@ namespace HtmlAgilityPack
 		}
 
 		/// <summary>
-		/// Applies HTML encoding to a specified string.
-		/// </summary>
-		/// <param name="html">The input string to encode. May not be null.</param>
-		/// <returns>The encoded string.</returns>
-		public static string HtmlEncode(string html)
-		{
-			if (html == null)
-			{
-				throw new ArgumentNullException("html");
-			}
-			// replace & by &amp; but only once!
-			Regex rx = new Regex("&(?!(amp;)|(lt;)|(gt;)|(quot;))", RegexOptions.IgnoreCase);
-			return rx.Replace(html, "&amp;").Replace("<", "&lt;").Replace(">", "&gt;").Replace("\"", "&quot;");
-		}
-
-		/// <summary>
 		/// Determines if the specified character is considered as a whitespace character.
 		/// </summary>
 		/// <param name="c">The character to check.</param>
