@@ -21,7 +21,6 @@ namespace HtmlAgilityPack
         private static int _maxDepthLevel = int.MaxValue;
 
         private int _c;
-		private Crc32 _crc32;
 		private HtmlAttribute _currentattribute;
 		private HtmlNode _currentnode;
 		private Encoding _declaredencoding;
@@ -60,12 +59,6 @@ namespace HtmlAgilityPack
 		/// Defines if non closed nodes will be checked at the end of parsing. Default is true.
 		/// </summary>
 		public bool OptionCheckSyntax = true;
-
-		/// <summary>
-		/// Defines if a checksum must be computed for the document while parsing. Default is false.
-		/// </summary>
-		public bool OptionComputeChecksum;
-
 
 
 		/// <summary>
@@ -172,14 +165,6 @@ namespace HtmlAgilityPack
             get { return _maxDepthLevel; }
             set { _maxDepthLevel = value; }
         }
-
-        /// <summary>
-        /// Gets the document CRC32 checksum if OptionComputeChecksum was set to true before parsing, 0 otherwise.
-        /// </summary>
-        public int CheckSum
-		{
-			get { return _crc32 == null ? 0 : (int)_crc32.CheckSum; }
-		}
 
 		/// <summary>
 		/// Gets the document's declared encoding.
@@ -1046,12 +1031,6 @@ namespace HtmlAgilityPack
 
 		private void IncrementPosition()
 		{
-			if (_crc32 != null)
-			{
-				// REVIEW: should we add some checksum code in DecrementPosition too?
-				_crc32.AddToCRC32(_c);
-			}
-
 			_index++;
 			_maxlineposition = _lineposition;
 			if (_c == 10)
@@ -1133,10 +1112,6 @@ namespace HtmlAgilityPack
 		private void Parse()
 		{
 			int lastquote = 0;
-			if (OptionComputeChecksum)
-			{
-				_crc32 = new Crc32();
-			}
 
 			Lastnodes = new Dictionary<string, HtmlNode>();
 			_c = 0;
