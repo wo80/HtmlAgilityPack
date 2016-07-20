@@ -11,7 +11,7 @@ namespace HtmlAgilityPack
 	/// <summary>
 	/// Represents a complete HTML document.
 	/// </summary>
-	public partial class HtmlDocument
+	public class HtmlDocument
 	{
         #region Fields
         

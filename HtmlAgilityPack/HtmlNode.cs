@@ -12,7 +12,7 @@ namespace HtmlAgilityPack
 	/// Represents an HTML node.
 	/// </summary>
 	[DebuggerDisplay("Name: {OriginalName}")]
-	public partial class HtmlNode
+	public class HtmlNode
 	{
         #region Consts
         internal const string DepthLevelExceptionMessage = "The document is too complex to parse";
