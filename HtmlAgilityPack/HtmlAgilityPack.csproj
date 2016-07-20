@@ -48,7 +48,6 @@
     <Compile Include="EncodingFoundException.cs" />
     <Compile Include="HtmlAttributeCollection.cs" />
     <Compile Include="HtmlCommentNode.cs" />
-    <Compile Include="HtmlDocument.PathMethods.cs" />
     <Compile Include="HtmlElementFlag.cs" />
     <Compile Include="HtmlNameTable.cs" />
     <Compile Include="HtmlNodeCollection.cs" />
