@@ -49,10 +49,8 @@
     <Compile Include="HtmlAttributeCollection.cs" />
     <Compile Include="HtmlCommentNode.cs" />
     <Compile Include="HtmlDocument.PathMethods.cs" />
-    <Compile Include="HtmlDocument.Xpath.cs" />
     <Compile Include="HtmlElementFlag.cs" />
     <Compile Include="HtmlNameTable.cs" />
-    <Compile Include="HtmlNode.Xpath.cs" />
     <Compile Include="HtmlNodeCollection.cs" />
     <Compile Include="HtmlNodeType.cs" />
     <Compile Include="HtmlParseError.cs" />
@@ -64,10 +62,7 @@
     <Compile Include="HtmlDocument.cs" />
     <Compile Include="HtmlEntity.cs" />
     <Compile Include="HtmlNode.cs" />
-    <Compile Include="HtmlNodeNavigator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Trace.cs" />
-    <Compile Include="Trace.FullFramework.cs" />
     <Compile Include="Utilities.cs" />
   </ItemGroup>
   <ItemGroup>
