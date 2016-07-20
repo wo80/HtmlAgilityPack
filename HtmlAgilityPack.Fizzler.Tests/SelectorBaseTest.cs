@@ -15,7 +15,7 @@ namespace HtmlAgilityPack.Fizzler.Tests
 		{
             string html;
 			var assembly = Assembly.GetExecutingAssembly();
-	        const string resourceName = "Fizzler.Tests.SelectorTest.html";
+            const string resourceName = "HtmlAgilityPack.Fizzler.Tests.SelectorTest.html";
             using (var stream = assembly.GetManifestResourceStream(resourceName))
             {
                 if (stream == null)

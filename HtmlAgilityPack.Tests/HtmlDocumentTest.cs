@@ -95,7 +95,7 @@ namespace HtmlAgilityPack.Tests
 		[Test]
 		public void HtmlEncode()
 		{
-			var result = HtmlDocument.HtmlEncode("http://something.com\"&<>");
+			var result = HtmlWriter.HtmlEncode("http://something.com\"&<>");
 			Assert.AreEqual("http://something.com&quot;&amp;&lt;&gt;", result);
 		}
 	}

@@ -73,12 +73,12 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Resources\encoding-iso-8859-test-1.htm" />
-    <Content Include="Resources\encoding-iso-8859-test-2.htm" />
-    <Content Include="Resources\encoding-iso-8859-test-3.htm" />
-    <Content Include="Resources\encoding-utf8-test-1.htm" />
-    <Content Include="Resources\encoding-utf8-test-2.htm" />
-    <Content Include="Resources\encoding-utf8-test-3.htm" />
+    <None Include="Resources\encoding-iso-8859-test-1.htm" />
+    <None Include="Resources\encoding-iso-8859-test-2.htm" />
+    <None Include="Resources\encoding-iso-8859-test-3.htm" />
+    <None Include="Resources\encoding-utf8-test-1.htm" />
+    <None Include="Resources\encoding-utf8-test-2.htm" />
+    <None Include="Resources\encoding-utf8-test-3.htm" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
