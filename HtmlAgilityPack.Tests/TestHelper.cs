@@ -25,8 +25,7 @@ namespace HtmlAgilityPack.Tests
 
             using (var reader = new StreamReader(Path.Combine(directory, file)))
             {
-                doc = new HtmlDocument();
-                doc.Load(reader);
+                doc = HtmlDocument.Load(reader);
             }
 
             return doc;

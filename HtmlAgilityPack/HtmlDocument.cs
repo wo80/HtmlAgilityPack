@@ -292,7 +292,7 @@ namespace HtmlAgilityPack
         /// Loads the HTML document from the specified string.
         /// </summary>
         /// <param name="html">String containing the HTML document to load. May not be null.</param>
-        public static HtmlDocument LoadHtml(string html)
+        public static HtmlDocument Parse(string html)
         {
             if (html == null)
             {

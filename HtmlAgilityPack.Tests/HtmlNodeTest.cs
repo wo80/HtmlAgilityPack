@@ -14,9 +14,8 @@ namespace HtmlAgilityPack.Tests
 		public void EnsureAttributeOriginalCaseIsPreserved()
 		{
 			var html = "<html><body><div AttributeIsThis=\"val\"></div></body></html>";
-			var doc = new HtmlDocument();
+			var doc = HtmlDocument.Parse(html);
             doc.Options.OutputOriginalCase = true;
-			doc.LoadHtml(html);
 			var div = doc.DocumentNode.Descendants("div").FirstOrDefault();
 			var writer = new StringWriter();
             (new HtmlWriter(doc)).WriteAttributes(writer, div, false);

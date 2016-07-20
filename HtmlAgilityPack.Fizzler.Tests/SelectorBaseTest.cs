@@ -23,9 +23,7 @@ namespace HtmlAgilityPack.Fizzler.Tests
                 using(var reader = new StreamReader(stream))
                     html = reader.ReadToEnd();
             }
-	        var document = new HtmlDocument();
-            document.LoadHtml(html);
-            Document = document;
+            Document = HtmlDocument.Parse(html);
         }
 
 	    protected HtmlDocument Document { get; private set; }
