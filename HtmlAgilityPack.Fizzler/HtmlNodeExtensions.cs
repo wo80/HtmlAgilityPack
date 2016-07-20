@@ -1,22 +1,16 @@
-namespace Fizzler.Systems.HtmlAgilityPack
+namespace HtmlAgilityPack
 {
-    #region Imports
-
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.Linq;
     using System.Text;
-    using global::HtmlAgilityPack;
-
-    #endregion
 
     /// <summary>
     /// HtmlNode extension methods.
     /// </summary>
     public static class HtmlNodeExtensions
     {
-
         [Obsolete("Use LoadHtml() instead. The version of HtmlAgilityPack which is included in FizzlerEx does NOT suffer from the Form nesting bug.")]
         public static void LoadHtml2(this HtmlDocument document, string html)
         {
@@ -30,9 +24,6 @@ namespace Fizzler.Systems.HtmlAgilityPack
             document.Load(path);
         }
 #endif
-
-
-
 
         /// <summary>
         /// Determines whether this node is an element or not.

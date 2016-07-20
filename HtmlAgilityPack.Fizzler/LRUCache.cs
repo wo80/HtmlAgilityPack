@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-
-
-
-namespace Fizzler
+﻿
+namespace HtmlAgilityPack.Fizzler
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Threading;
+
     public class LRUCache<TInput, TResult> : IDisposable
     {
 

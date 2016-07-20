@@ -1,17 +1,13 @@
-namespace Fizzler.Tests
+namespace HtmlAgilityPack.Fizzler.Tests
 {
-    #region Imports
-
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.IO;
     using System.Linq;
     using System.Reflection;
-    using Fizzler.Systems.HtmlAgilityPack;
+    using HtmlAgilityPack.Fizzler;
     using HtmlAgilityPack;
-
-    #endregion
     
     public abstract class SelectorBaseTest
 	{

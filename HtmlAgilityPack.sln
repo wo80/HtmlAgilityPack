@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HtmlAgilityPack.Tests", "Ht
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HtmlAgilityPack.Fizzler", "HtmlAgilityPack.Fizzler\HtmlAgilityPack.Fizzler.csproj", "{939036D6-29FD-46E4-B6CD-52618F51081B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HtmlAgilityPack.Fizzler.Tests", "HtmlAgilityPack.Fizzler.Tests\HtmlAgilityPack.Fizzler.Tests.csproj", "{61EDF5C0-1854-4867-AE8A-7A1216E116C9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -25,6 +27,10 @@ Global
 		{939036D6-29FD-46E4-B6CD-52618F51081B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{939036D6-29FD-46E4-B6CD-52618F51081B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{939036D6-29FD-46E4-B6CD-52618F51081B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{61EDF5C0-1854-4867-AE8A-7A1216E116C9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{61EDF5C0-1854-4867-AE8A-7A1216E116C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{61EDF5C0-1854-4867-AE8A-7A1216E116C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{61EDF5C0-1854-4867-AE8A-7A1216E116C9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

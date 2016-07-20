@@ -1,5 +1,5 @@
-using System.Text.RegularExpressions;
-namespace Fizzler
+
+namespace HtmlAgilityPack.Fizzler
 {
     /// <summary>
     /// Represents a selectors implementation for an arbitrary document/node system.

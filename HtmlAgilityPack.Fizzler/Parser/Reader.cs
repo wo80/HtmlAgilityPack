@@ -1,12 +1,8 @@
-﻿namespace Fizzler
+﻿namespace HtmlAgilityPack.Fizzler
 {
-    #region Imports
-
     using System;
     using System.Collections;
     using System.Collections.Generic;
-
-    #endregion
 
     /// <summary>
     /// Adds reading semantics to a base <see cref="IEnumerator{T}"/> with the 

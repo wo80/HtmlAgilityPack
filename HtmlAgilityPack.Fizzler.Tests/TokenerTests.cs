@@ -1,13 +1,9 @@
-namespace Fizzler.Tests
+namespace HtmlAgilityPack.Fizzler.Tests
 {
-    #region Imports
-
     using System;
     using System.IO;
     using System.Linq;
     using NUnit.Framework;
-
-    #endregion
 
     [TestFixture]
     public class TokenerTests

@@ -1,13 +1,9 @@
-﻿namespace Fizzler.Systems.HtmlAgilityPack
+﻿namespace HtmlAgilityPack.Fizzler
 {
-    #region Imports
-
+    using HtmlAgilityPack;
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using global::HtmlAgilityPack;
-
-    #endregion
 
     /// <summary>
     /// Selector API for <see cref="HtmlNode"/>.

@@ -1,5 +1,5 @@
 
-namespace Fizzler.Tests
+namespace HtmlAgilityPack.Fizzler.Tests
 {
     using NUnit.Framework;
 

@@ -1,4 +1,4 @@
-namespace Fizzler
+namespace HtmlAgilityPack.Fizzler
 {
     using System.Collections.Generic;
 

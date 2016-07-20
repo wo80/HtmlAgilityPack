@@ -21,14 +21,10 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-namespace Fizzler
+namespace HtmlAgilityPack.Fizzler
 {
-    #region Imports
-
     using System;
     using System.Collections.Generic;
-
-    #endregion
 
     // Adapted from Mono Rocks
 

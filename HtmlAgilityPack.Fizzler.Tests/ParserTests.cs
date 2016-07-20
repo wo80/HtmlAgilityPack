@@ -1,13 +1,9 @@
-namespace Fizzler.Tests
+namespace HtmlAgilityPack.Fizzler.Tests
 {
-    #region Imports
-
     using System;
     using System.Collections.Generic;
     using NUnit.Framework;
     using NUnit.Framework.SyntaxHelpers;
-
-    #endregion
 
     [TestFixture]
     public class ParserTests

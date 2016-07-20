@@ -1,14 +1,10 @@
-﻿namespace Fizzler
+﻿namespace HtmlAgilityPack.Fizzler
 {
-    #region Imports
-
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.IO;
     using System.Text;
-
-    #endregion
 
     /// <summary>
     /// Lexer for tokens in CSS selector grammar.

@@ -1,4 +1,4 @@
-namespace Fizzler
+namespace HtmlAgilityPack.Fizzler
 {
     /// <summary>
     /// Represents the classification of a token.

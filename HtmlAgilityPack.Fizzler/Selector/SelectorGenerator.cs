@@ -1,12 +1,8 @@
-namespace Fizzler
+namespace HtmlAgilityPack.Fizzler
 {
-    #region Imports
-
     using System;
     using System.Collections.Generic;
     using System.Linq;
-
-    #endregion
 
     /// <summary>
     /// A selector generator implementation for an arbitrary document/element system.

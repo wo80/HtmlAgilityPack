@@ -1,4 +1,4 @@
-namespace Fizzler
+namespace HtmlAgilityPack.Fizzler
 {
     /// <summary>
     /// Represent an implementation that is responsible for generating

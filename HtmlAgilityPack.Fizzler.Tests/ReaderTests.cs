@@ -1,13 +1,9 @@
-namespace Fizzler.Tests
+namespace HtmlAgilityPack.Fizzler.Tests
 {
-    #region Imports
-
     using System;
     using System.Collections;
     using System.Collections.Generic;
     using NUnit.Framework;
-
-    #endregion
 
     [TestFixture]
     public class ReaderTests

@@ -1,12 +1,10 @@
-using Fizzler;
-
-namespace Fizzler.Systems.HtmlAgilityPack
+namespace HtmlAgilityPack.Fizzler
 {
     #region Imports
 
+    using HtmlAgilityPack;
     using System;
     using System.Linq;
-    using global::HtmlAgilityPack;
     using System.Collections.Generic;
     using System.Text.RegularExpressions;
 
