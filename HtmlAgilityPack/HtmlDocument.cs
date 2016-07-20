@@ -817,7 +817,7 @@ namespace HtmlAgilityPack
 				return;
 
 			bool error = false;
-			HtmlNode prev = Utilities.GetDictionaryValueOrNull(Lastnodes, _currentnode.Name);
+			HtmlNode prev = Lastnodes.GetValueOrNull(_currentnode.Name);
 
 			// find last node of this kind
 			if (prev == null)
@@ -954,7 +954,7 @@ namespace HtmlAgilityPack
 
 		private HtmlNode FindResetterNode(HtmlNode node, string name)
 		{
-			HtmlNode resetter = Utilities.GetDictionaryValueOrNull(Lastnodes, name);
+			HtmlNode resetter = Lastnodes.GetValueOrNull(name);
 			if (resetter == null)
 				return null;
 
@@ -987,7 +987,7 @@ namespace HtmlAgilityPack
 			if (resetters == null)
 				return;
 
-			HtmlNode prev = Utilities.GetDictionaryValueOrNull(Lastnodes, _currentnode.Name);
+			HtmlNode prev = Lastnodes.GetValueOrNull(_currentnode.Name);
 			// if we find a previous unclosed same name node, without a resetter node between, we must close it
 			if (prev == null || (Lastnodes[name].Closed)) return;
 			// try to find a resetter node, if found, we do nothing
@@ -1555,7 +1555,7 @@ namespace HtmlAgilityPack
 					ReadDocumentEncoding(_currentnode);
 
 					// remember last node of this kind
-					HtmlNode prev = Utilities.GetDictionaryValueOrNull(Lastnodes, _currentnode.Name);
+					HtmlNode prev = Lastnodes.GetValueOrNull(_currentnode.Name);
 
 					_currentnode._prevwithsamename = prev;
 					Lastnodes[_currentnode.Name] = _currentnode;

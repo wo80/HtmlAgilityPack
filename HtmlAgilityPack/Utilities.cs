@@ -1,14 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
+﻿
 namespace HtmlAgilityPack
 {
-    internal static class Utilities
+    using System;
+    using System.Collections.Generic;
+
+    internal static class Utilities_
     {
-        public static TValue GetDictionaryValueOrNull<TKey,TValue>(Dictionary<TKey,TValue> dict, TKey key) where TKey: class
+        public static V GetValueOrNull<K, V>(this Dictionary<K, V> dict, K key)
+            where K : class
         {
-            return dict.ContainsKey(key) ? dict[key] : default(TValue);
+            V value;
+
+            if (dict.TryGetValue(key, out value))
+            {
+                return value;
+            }
+
+            return default(V);
         }
     }
 }

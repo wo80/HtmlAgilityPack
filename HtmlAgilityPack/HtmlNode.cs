@@ -1495,7 +1495,7 @@ namespace HtmlAgilityPack
 				if (_ownerdocument.Openednodes != null)
 					_ownerdocument.Openednodes.Remove(_outerstartindex);
 
-				HtmlNode self = Utilities.GetDictionaryValueOrNull(_ownerdocument.Lastnodes, Name);
+				HtmlNode self = _ownerdocument.Lastnodes.GetValueOrNull(Name);
 				if (self == this)
 				{
 					_ownerdocument.Lastnodes.Remove(Name);
