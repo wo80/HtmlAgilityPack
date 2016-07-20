@@ -128,10 +128,10 @@ namespace HtmlAgilityPack.Fizzler.Tests
             Assert.AreEqual(Token.Ident("-foo-BAR-42"), Tokener.Tokenize("-foo-BAR-42").First());
         }
 
-        [Test, ExpectedException(typeof(FormatException))]
+        [Test]
         public void IdentifierUsingVendorExtensionSyntaxCannotBeginWithDigit()
         {
-            Tokener.Tokenize("-42").ToArray();
+            Assert.Throws<FormatException>(() => Tokener.Tokenize("-42").ToArray());
         }
 
         [Test]
@@ -217,10 +217,10 @@ namespace HtmlAgilityPack.Fizzler.Tests
             Assert.IsFalse(token.MoveNext());
         }
         
-        [Test, ExpectedException(typeof(FormatException))]
+        [Test]
         public void BadHash()
         {
-            Tokener.Tokenize("#").ToArray();
+            Assert.Throws<FormatException>(() => Tokener.Tokenize("#").ToArray());
         }
 
         [Test]
@@ -297,28 +297,28 @@ namespace HtmlAgilityPack.Fizzler.Tests
 			Assert.AreEqual(TokenKind.Tilde, Tokener.Tokenize("  ~").First().Kind);
 		}
 
-        [Test,ExpectedException(typeof(FormatException))]
+        [Test]
         public void StringSingleQuoteUnterminated()
         {
-            Tokener.Tokenize("'foo").ToArray();
+            Assert.Throws<FormatException>(() => Tokener.Tokenize("'foo").ToArray());
         }
 
-        [Test, ExpectedException(typeof(FormatException))]
+        [Test]
         public void StringDoubleQuoteUnterminated()
         {
-            Tokener.Tokenize("\"foo").ToArray();
+            Assert.Throws<FormatException>(() => Tokener.Tokenize("\"foo").ToArray());
         }
 
-        [Test, ExpectedException(typeof(FormatException))]
+        [Test]
         public void StringInvalidEscaping()
         {
-            Tokener.Tokenize(@"'f\oo").ToArray();
+            Assert.Throws<FormatException>(() => Tokener.Tokenize(@"'f\oo").ToArray());
         }
 
-        [Test, ExpectedException(typeof(ArgumentNullException))]
+        [Test]
         public void NullReader()
         {
-            Tokener.Tokenize((TextReader) null);
+            Assert.Throws<ArgumentNullException>(() => Tokener.Tokenize((TextReader) null));
         }
 
         [Test]
@@ -328,10 +328,10 @@ namespace HtmlAgilityPack.Fizzler.Tests
                 Tokener.Tokenize(new StringReader("123,*")).ToArray());
         }
 
-        [Test, ExpectedException(typeof(FormatException))]
+        [Test]
         public void InvalidChar()
         {
-            Tokener.Tokenize("what?").ToArray();
+            Assert.Throws<FormatException>(() => Tokener.Tokenize("what?").ToArray());
         }
     }
 }

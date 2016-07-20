@@ -3,7 +3,6 @@ namespace HtmlAgilityPack.Fizzler.Tests
     using System;
     using System.Collections.Generic;
     using NUnit.Framework;
-    using NUnit.Framework.SyntaxHelpers;
 
     [TestFixture]
     public class ParserTests
@@ -573,6 +572,17 @@ namespace HtmlAgilityPack.Fizzler.Tests
             public void Last()
             {
                 throw new NotImplementedException();
+            }
+
+
+            public void CustomSelector(object selector)
+            {
+                throw new NotImplementedException();
+            }
+
+            public object Selector
+            {
+                get { throw new NotImplementedException(); }
             }
         }
     }
