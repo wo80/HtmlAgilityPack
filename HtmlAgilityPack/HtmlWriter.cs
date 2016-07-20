@@ -72,14 +72,14 @@ namespace HtmlAgilityPack
             {
                 case HtmlNodeType.Comment:
                     html = ((HtmlCommentNode)node).Comment;
-                    if (_document.OptionOutputAsXml)
+                    if (_document.Options.OutputAsXml)
                         writer.Write("<!--" + GetXmlComment((HtmlCommentNode)node) + " -->");
                     else
                         writer.Write(html);
                     break;
 
                 case HtmlNodeType.Document:
-                    if (_document.OptionOutputAsXml)
+                    if (_document.Options.OutputAsXml)
                     {
 #if SILVERLIGHT || PocketPC || METRO
 						writer.Write("<?xml version=\"1.0\" encoding=\"" + _document.GetOutEncoding().WebName + "\"?>");
@@ -98,7 +98,7 @@ namespace HtmlAgilityPack
 
                                 if (rootnodes > 1)
                                 {
-                                    if (_document.OptionOutputUpperCase)
+                                    if (_document.Options.OutputUpperCase)
                                     {
                                         writer.Write("<SPAN>");
                                         WriteContentTo(writer, node, level);
@@ -120,16 +120,16 @@ namespace HtmlAgilityPack
 
                 case HtmlNodeType.Text:
                     html = ((HtmlTextNode)node).Text;
-                    writer.Write(_document.OptionOutputAsXml ? HtmlEncode(html) : html);
+                    writer.Write(_document.Options.OutputAsXml ? HtmlEncode(html) : html);
                     break;
 
                 case HtmlNodeType.Element:
-                    string name = _document.OptionOutputUpperCase ? node.Name.ToUpper() : node.Name;
+                    string name = _document.Options.OutputUpperCase ? node.Name.ToUpper() : node.Name;
 
-                    if (_document.OptionOutputOriginalCase)
+                    if (_document.Options.OutputOriginalCase)
                         name = node.OriginalName;
 
-                    if (_document.OptionOutputAsXml)
+                    if (_document.Options.OutputAsXml)
                     {
                         if (name.Length > 0)
                         {
@@ -152,7 +152,7 @@ namespace HtmlAgilityPack
                     {
                         writer.Write(">");
                         bool cdata = false;
-                        if (_document.OptionOutputAsXml && HtmlNode.IsCDataElement(node.Name))
+                        if (_document.Options.OutputAsXml && HtmlNode.IsCDataElement(node.Name))
                         {
                             // this code and the following tries to output things as nicely as possible for old browsers.
                             cdata = true;
@@ -172,7 +172,7 @@ namespace HtmlAgilityPack
                             WriteContentTo(writer, node, level);
 
                         writer.Write("</" + name);
-                        if (!_document.OptionOutputAsXml)
+                        if (!_document.Options.OutputAsXml)
                             WriteAttributes(writer, node, true);
 
                         writer.Write(">");
@@ -181,7 +181,7 @@ namespace HtmlAgilityPack
                     {
                         if (HtmlNode.IsEmptyElement(node.Name))
                         {
-                            if ((_document.OptionWriteEmptyNodes) || (_document.OptionOutputAsXml))
+                            if ((_document.Options.WriteEmptyNodes) || (_document.Options.OutputAsXml))
                                 writer.Write(" />");
                             else
                             {
@@ -237,9 +237,9 @@ namespace HtmlAgilityPack
                     break;
 
                 case HtmlNodeType.Element:
-                    string name = _document.OptionOutputUpperCase ? node.Name.ToUpper() : node.Name;
+                    string name = _document.Options.OutputUpperCase ? node.Name.ToUpper() : node.Name;
 
-                    if (_document.OptionOutputOriginalCase)
+                    if (_document.Options.OutputOriginalCase)
                         name = node.OriginalName;
 
                     writer.WriteStartElement(name);
@@ -295,18 +295,18 @@ namespace HtmlAgilityPack
         {
             string name;
             string quote = att.QuoteType == AttributeValueQuote.DoubleQuote ? "\"" : "'";
-            if (_document.OptionOutputAsXml)
+            if (_document.Options.OutputAsXml)
             {
-                name = _document.OptionOutputUpperCase ? att.XmlName.ToUpper() : att.XmlName;
-                if (_document.OptionOutputOriginalCase)
+                name = _document.Options.OutputUpperCase ? att.XmlName.ToUpper() : att.XmlName;
+                if (_document.Options.OutputOriginalCase)
                     name = att.OriginalName;
 
                 writer.Write(" " + name + "=" + quote + HtmlEncode(att.XmlValue) + quote);
             }
             else
             {
-                name = _document.OptionOutputUpperCase ? att.Name.ToUpper() : att.Name;
-                if (_document.OptionOutputOriginalCase)
+                name = _document.Options.OutputUpperCase ? att.Name.ToUpper() : att.Name;
+                if (_document.Options.OutputOriginalCase)
                     name = att.OriginalName;
                 if (att.Name.Length >= 4)
                 {
@@ -317,7 +317,7 @@ namespace HtmlAgilityPack
                         return;
                     }
                 }
-                if (_document.OptionOutputOptimizeAttributeValues)
+                if (_document.Options.OutputOptimizeAttributeValues)
                     if (att.Value.IndexOfAny(new char[] { (char)10, (char)13, (char)9, ' ' }) < 0)
                         writer.Write(" " + name + "=" + att.Value);
                     else
@@ -336,7 +336,7 @@ namespace HtmlAgilityPack
 
             var attributes = node.Attributes;
 
-            if (_document.OptionOutputAsXml)
+            if (_document.Options.OutputAsXml)
             {
                 // we use Hashitems to make sure attributes are written only once
                 foreach (HtmlAttribute att in attributes.Hashitems.Values)
@@ -353,7 +353,7 @@ namespace HtmlAgilityPack
                     foreach (HtmlAttribute att in attributes)
                         WriteAttribute(writer, att);
 
-                if (!_document.OptionAddDebuggingAttributes) return;
+                if (!_document.Options.AddDebuggingAttributes) return;
 
                 WriteAttribute(writer, _document.CreateAttribute("_closed", Closed.ToString()));
                 WriteAttribute(writer, _document.CreateAttribute("_children", ChildNodes.Count.ToString()));
@@ -374,7 +374,7 @@ namespace HtmlAgilityPack
                 foreach (HtmlAttribute att in _endnode._attributes)
                     WriteAttribute(writer, att);
 
-                if (!_document.OptionAddDebuggingAttributes) return;
+                if (!_document.Options.AddDebuggingAttributes) return;
 
                 WriteAttribute(writer, _document.CreateAttribute("_closed", Closed.ToString()));
                 WriteAttribute(writer, _document.CreateAttribute("_children", ChildNodes.Count.ToString()));

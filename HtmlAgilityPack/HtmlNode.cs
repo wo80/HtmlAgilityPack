@@ -1309,7 +1309,7 @@ namespace HtmlAgilityPack
 				return;
 			}
 
-			if (_ownerdocument.OptionUseIdAttribute)
+            if (_ownerdocument.Options.UseIdAttribute)
 			{
 				// remove nodes from id list
 				foreach (HtmlNode node in _childnodes)
@@ -1470,7 +1470,7 @@ namespace HtmlAgilityPack
                 throw new ArgumentException(HtmlNode.DepthLevelExceptionMessage);
             }
 
-            if (!_ownerdocument.OptionAutoCloseOnEnd)
+            if (!_ownerdocument.Options.AutoCloseOnEnd)
 			{
 				// close all children
 				if (_childnodes != null)

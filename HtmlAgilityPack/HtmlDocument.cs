@@ -13,8 +13,6 @@ namespace HtmlAgilityPack
 	/// </summary>
 	public class HtmlDocument
 	{
-        #region Fields
-        
         /// <summary>
         /// Defines the max level we would go deep into the html document
         /// </summary>
@@ -42,91 +40,10 @@ namespace HtmlAgilityPack
 		private Encoding _streamencoding;
 		internal string Text;
 
-		// public props
-
-		/// <summary>
-		/// Adds Debugging attributes to node. Default is false.
-		/// </summary>
-		public bool OptionAddDebuggingAttributes;
-
-		/// <summary>
-		/// Defines if closing for non closed nodes must be done at the end or directly in the document.
-		/// Setting this to true can actually change how browsers render the page. Default is false.
-		/// </summary>
-		public bool OptionAutoCloseOnEnd; // close errors at the end
-
-		/// <summary>
-		/// Defines if non closed nodes will be checked at the end of parsing. Default is true.
-		/// </summary>
-		public bool OptionCheckSyntax = true;
-
-
-		/// <summary>
-		/// Defines the default stream encoding to use. Default is System.Text.Encoding.Default.
-		/// </summary>
-		public Encoding OptionDefaultStreamEncoding;
-		/// <summary>
-		/// Defines if source text must be extracted while parsing errors.
-		/// If the document has a lot of errors, or cascading errors, parsing performance can be dramatically affected if set to true.
-		/// Default is false.
-		/// </summary>
-		public bool OptionExtractErrorSourceText;
-
-		// turning this on can dramatically slow performance if a lot of errors are detected
-
-		/// <summary>
-		/// Defines the maximum length of source text or parse errors. Default is 100.
-		/// </summary>
-		public int OptionExtractErrorSourceTextMaxLength = 100;
-
-		/// <summary>
-		/// Defines if LI, TR, TH, TD tags must be partially fixed when nesting errors are detected. Default is false.
-		/// </summary>
-		public bool OptionFixNestedTags; // fix li, tr, th, td tags
-
-		/// <summary>
-		/// Defines if output must conform to XML, instead of HTML.
-		/// </summary>
-		public bool OptionOutputAsXml;
-
-		/// <summary>
-		/// Defines if attribute value output must be optimized (not bound with double quotes if it is possible). Default is false.
-		/// </summary>
-		public bool OptionOutputOptimizeAttributeValues;
-
-		/// <summary>
-		/// Defines if name must be output with it's original case. Useful for asp.net tags and attributes
-		/// </summary>
-		public bool OptionOutputOriginalCase;
-
-		/// <summary>
-		/// Defines if name must be output in uppercase. Default is false.
-		/// </summary>
-		public bool OptionOutputUpperCase;
-
-		/// <summary>
-		/// Defines if declared encoding must be read from the document.
-		/// Declared encoding is determined using the meta http-equiv="content-type" content="text/html;charset=XXXXX" html node.
-		/// Default is true.
-		/// </summary>
-		public bool OptionReadEncoding = true;
-
-		/// <summary>
-		/// Defines the name of a node that will throw the StopperNodeException when found as an end node. Default is null.
-		/// </summary>
-		public string OptionStopperNodeName;
-
-		/// <summary>
-		/// Defines if the 'id' attribute must be specifically used. Default is true.
-		/// </summary>
-		public bool OptionUseIdAttribute = true;
-
-		/// <summary>
-		/// Defines if empty nodes must be written as closed during output. Default is false.
-		/// </summary>
-		public bool OptionWriteEmptyNodes;
-
-		#endregion
+        /// <summary>
+        /// HtmlDocument options.
+        /// </summary>
+        public readonly HtmlDocumentOptions Options = new HtmlDocumentOptions();
 
 		#region Static Members
 
@@ -146,9 +63,9 @@ namespace HtmlAgilityPack
 		{
 			_documentnode = CreateNode(HtmlNodeType.Document, 0);
 #if SILVERLIGHT || METRO
-            OptionDefaultStreamEncoding =Encoding.UTF8;
+            Options.DefaultStreamEncoding =Encoding.UTF8;
 #else
-			OptionDefaultStreamEncoding = Encoding.Default;
+            Options.DefaultStreamEncoding = Encoding.Default;
 #endif
 
 		}
@@ -403,7 +320,7 @@ namespace HtmlAgilityPack
 		/// <param name="stream">The input stream.</param>
 		public void Load(Stream stream)
 		{
-			Load(new StreamReader(stream, OptionDefaultStreamEncoding));
+            Load(new StreamReader(stream, Options.DefaultStreamEncoding));
 		}
 
 		/// <summary>
@@ -462,12 +379,12 @@ namespace HtmlAgilityPack
 
 			_onlyDetectEncoding = false;
 
-			if (OptionCheckSyntax)
+            if (Options.CheckSyntax)
 				Openednodes = new Dictionary<int, HtmlNode>();
 			else
 				Openednodes = null;
 
-			if (OptionUseIdAttribute)
+            if (Options.UseIdAttribute)
 			{
 				Nodesid = new Dictionary<string, HtmlNode>();
 			}
@@ -502,7 +419,7 @@ namespace HtmlAgilityPack
 			_documentnode = CreateNode(HtmlNodeType.Document, 0);
 			Parse();
 
-			if (!OptionCheckSyntax || Openednodes == null) return;
+            if (!Options.CheckSyntax || Openednodes == null) return;
 			foreach (HtmlNode node in Openednodes.Values)
 			{
 				if (!node._starttag) // already reported
@@ -511,12 +428,12 @@ namespace HtmlAgilityPack
 				}
 
 				string html;
-				if (OptionExtractErrorSourceText)
+                if (Options.ExtractErrorSourceText)
 				{
 					html = node.OuterHtml;
-					if (html.Length > OptionExtractErrorSourceTextMaxLength)
+                    if (html.Length > Options.ExtractErrorSourceTextMaxLength)
 					{
-						html = html.Substring(0, OptionExtractErrorSourceTextMaxLength);
+                        html = html.Substring(0, Options.ExtractErrorSourceTextMaxLength);
 					}
 				}
 				else
@@ -648,7 +565,7 @@ namespace HtmlAgilityPack
 		internal Encoding GetOutEncoding()
 		{
 			// when unspecified, use the stream encoding first
-			return _declaredencoding ?? (_streamencoding ?? OptionDefaultStreamEncoding);
+            return _declaredencoding ?? (_streamencoding ?? Options.DefaultStreamEncoding);
 		}
 
 		internal HtmlNode GetXmlDeclaration()
@@ -665,7 +582,7 @@ namespace HtmlAgilityPack
 
 		internal void SetIdForNode(HtmlNode node, string id)
 		{
-			if (!OptionUseIdAttribute)
+            if (!Options.UseIdAttribute)
 				return;
 
 			if ((Nodesid == null) || (id == null))
@@ -789,7 +706,7 @@ namespace HtmlAgilityPack
 			{
 
 
-				if (OptionFixNestedTags)
+                if (Options.FixNestedTags)
 				{
 					if (FindResetterNodes(prev, GetResetters(_currentnode.Name)))
 					{
@@ -1473,8 +1390,8 @@ namespace HtmlAgilityPack
 
 			if ((close) || (!_currentnode._starttag))
 			{
-				if ((OptionStopperNodeName != null) && (_remainder == null) &&
-					(string.Compare(_currentnode.Name, OptionStopperNodeName, StringComparison.OrdinalIgnoreCase) == 0))
+                if ((Options.StopperNodeName != null) && (_remainder == null) &&
+                    (string.Compare(_currentnode.Name, Options.StopperNodeName, StringComparison.OrdinalIgnoreCase) == 0))
 				{
 					_remainderOffset = index;
 					_remainder = Text.Substring(_remainderOffset);
@@ -1489,7 +1406,7 @@ namespace HtmlAgilityPack
 		private void PushNodeNameEnd(int index)
 		{
 			_currentnode._namelength = index - _currentnode._namestartindex;
-			if (OptionFixNestedTags)
+            if (Options.FixNestedTags)
 			{
 				FixNestedTags();
 			}
@@ -1521,7 +1438,7 @@ namespace HtmlAgilityPack
 
             // when we append a child, we are in node end, so attributes are already populated
 
-            if (!OptionReadEncoding) return;
+            if (!Options.ReadEncoding) return;
 
             // quick check, avoids string alloc
             if (node._namelength != 4) return;
