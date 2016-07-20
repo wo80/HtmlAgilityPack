@@ -3,6 +3,7 @@ namespace HtmlAgilityPack
 {
     using System;
     using System.IO;
+    using System.Text;
     using System.Text.RegularExpressions;
     using System.Xml;
 
@@ -139,7 +140,7 @@ namespace HtmlAgilityPack
 
                             if (name.Trim().Length == 0)
                                 break;
-                            name = HtmlDocument.GetXmlName(name);
+                            name = GetXmlName(name);
                         }
                         else
                             break;
@@ -406,6 +407,44 @@ namespace HtmlAgilityPack
             // replace & by &amp; but only once!
             Regex rx = new Regex("&(?!(amp;)|(lt;)|(gt;)|(quot;))", RegexOptions.IgnoreCase);
             return rx.Replace(html, "&amp;").Replace("<", "&lt;").Replace(">", "&gt;").Replace("\"", "&quot;");
+        }
+
+        /// <summary>
+        /// Gets a valid XML name.
+        /// </summary>
+        /// <param name="name">Any text.</param>
+        /// <returns>A string that is a valid XML name.</returns>
+        public static string GetXmlName(string name)
+        {
+            string xmlname = string.Empty;
+            bool nameisok = true;
+            for (int i = 0; i < name.Length; i++)
+            {
+                // names are lcase
+                // note: we are very limited here, too much?
+                if (((name[i] >= 'a') && (name[i] <= 'z')) ||
+                    ((name[i] >= '0') && (name[i] <= '9')) ||
+                    //					(name[i]==':') || (name[i]=='_') || (name[i]=='-') || (name[i]=='.')) // these are bads in fact
+                    (name[i] == '_') || (name[i] == '-') || (name[i] == '.'))
+                {
+                    xmlname += name[i];
+                }
+                else
+                {
+                    nameisok = false;
+                    byte[] bytes = Encoding.UTF8.GetBytes(new char[] { name[i] });
+                    for (int j = 0; j < bytes.Length; j++)
+                    {
+                        xmlname += bytes[j].ToString("x2");
+                    }
+                    xmlname += "_";
+                }
+            }
+            if (nameisok)
+            {
+                return xmlname;
+            }
+            return "_" + xmlname;
         }
     }
 }

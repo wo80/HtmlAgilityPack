@@ -147,44 +147,6 @@ namespace HtmlAgilityPack
 		#region Public Methods
 
 		/// <summary>
-		/// Gets a valid XML name.
-		/// </summary>
-		/// <param name="name">Any text.</param>
-		/// <returns>A string that is a valid XML name.</returns>
-		public static string GetXmlName(string name)
-		{
-			string xmlname = string.Empty;
-			bool nameisok = true;
-			for (int i = 0; i < name.Length; i++)
-			{
-				// names are lcase
-				// note: we are very limited here, too much?
-				if (((name[i] >= 'a') && (name[i] <= 'z')) ||
-					((name[i] >= '0') && (name[i] <= '9')) ||
-					//					(name[i]==':') || (name[i]=='_') || (name[i]=='-') || (name[i]=='.')) // these are bads in fact
-					(name[i] == '_') || (name[i] == '-') || (name[i] == '.'))
-				{
-					xmlname += name[i];
-				}
-				else
-				{
-					nameisok = false;
-					byte[] bytes = Encoding.UTF8.GetBytes(new char[] { name[i] });
-					for (int j = 0; j < bytes.Length; j++)
-					{
-						xmlname += bytes[j].ToString("x2");
-					}
-					xmlname += "_";
-				}
-			}
-			if (nameisok)
-			{
-				return xmlname;
-			}
-			return "_" + xmlname;
-		}
-
-		/// <summary>
 		/// Determines if the specified character is considered as a whitespace character.
 		/// </summary>
 		/// <param name="c">The character to check.</param>

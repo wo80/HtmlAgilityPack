@@ -154,7 +154,7 @@ namespace HtmlAgilityPack
 
         internal string XmlName
         {
-            get { return HtmlDocument.GetXmlName(Name); }
+            get { return HtmlWriter.GetXmlName(Name); }
         }
 
         internal string XmlValue
