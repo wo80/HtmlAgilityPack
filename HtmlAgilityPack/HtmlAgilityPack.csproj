@@ -50,7 +50,6 @@
     <Compile Include="HtmlCommentNode.cs" />
     <Compile Include="HtmlDocumentOptions.cs" />
     <Compile Include="HtmlElementFlag.cs" />
-    <Compile Include="HtmlNameTable.cs" />
     <Compile Include="HtmlNodeCollection.cs" />
     <Compile Include="HtmlNodeType.cs" />
     <Compile Include="HtmlParseError.cs" />
