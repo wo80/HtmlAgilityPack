@@ -709,7 +709,9 @@ namespace HtmlAgilityPack
 			{
 				throw new ArgumentNullException("writer");
 			}
-			DocumentNode.WriteTo(writer);
+
+            (new HtmlWriter(this)).WriteTo(writer, DocumentNode);
+
             writer.Flush();
 		}
 
@@ -718,8 +720,9 @@ namespace HtmlAgilityPack
 		/// </summary>
 		/// <param name="writer">The XmlWriter to which you want to save.</param>
 		public void Save(XmlWriter writer)
-		{
-			DocumentNode.WriteTo(writer);
+        {
+            (new HtmlWriter(this)).WriteTo(writer, DocumentNode);
+
 			writer.Flush();
 		}
 
