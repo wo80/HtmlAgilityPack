@@ -7,7 +7,7 @@ using System.Net;
 namespace HtmlAgilityPack.Tests
 {
 	[TestFixture]
-	public class HtmlDocumentTests
+	public class HtmlDocumentTest
 	{
 		[Test]
 		public void StackOverflow()

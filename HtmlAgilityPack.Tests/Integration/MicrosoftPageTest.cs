@@ -8,27 +8,12 @@ namespace HtmlAgilityPack.Tests.Integration
 	[TestFixture]
 	public class MicrosoftPageTest
     {
-        private string _contentDirectory;
-
-        [OneTimeSetUp]
-        public void Setup()
-        {
-            _contentDirectory = Path.Combine(Directory.GetCurrentDirectory(),
-                "HtmlAgilityPack.Tests\\Resources");
-        }
-
-        private HtmlDocument GetMshomeDocument()
-        {
-            var doc = new HtmlDocument();
-            doc.Load(Path.Combine(_contentDirectory, "mshome-2003.htm"));
-            return doc;
-        }
-
+        private const string HTML_FILE = "mshome-2003.htm";
 
         [Test]
         public void TestParse()
         {
-            var doc = GetMshomeDocument();
+            var doc = TestHelper.Load(HTML_FILE);
             Assert.IsTrue(doc.DocumentNode.Descendants().Count() > 0);
         }
 
@@ -36,7 +21,7 @@ namespace HtmlAgilityPack.Tests.Integration
         public void TestLimitDepthParse()
         {
             HtmlAgilityPack.HtmlDocument.MaxDepthLevel = 10;
-            var doc = GetMshomeDocument();
+            var doc = TestHelper.Load(HTML_FILE);
             try
             {
                 Assert.IsTrue(doc.DocumentNode.Descendants().Count() > 0);
@@ -51,13 +36,14 @@ namespace HtmlAgilityPack.Tests.Integration
         [Test]
         public void TestParseSaveParse()
         {
-            var doc = GetMshomeDocument();
+            string file = TestHelper.GetLocalPath("testsaveparse.html");
+
+            var doc = TestHelper.Load(HTML_FILE);
             var doc1desc =
                 doc.DocumentNode.Descendants().Where(x => !string.IsNullOrWhiteSpace(x.InnerText)).ToList();
-            doc.Save(_contentDirectory + "testsaveparse.html");
+            TestHelper.Save(doc, file);
 
-            var doc2 = new HtmlDocument();
-            doc2.Load(_contentDirectory + "testsaveparse.html");
+            var doc2 = TestHelper.Load(file);
             var doc2desc =
                 doc2.DocumentNode.Descendants().Where(x => !string.IsNullOrWhiteSpace(x.InnerText)).ToList();
             Assert.AreEqual(doc1desc.Count, doc2desc.Count);
@@ -71,12 +57,14 @@ namespace HtmlAgilityPack.Tests.Integration
             //        throw;
             //    }
             //}
+
+            File.Delete(file);
         }
 
         [Test]
         public void TestRemoveUpdatesPreviousSibling()
         {
-            var doc = GetMshomeDocument();
+            var doc = TestHelper.Load(HTML_FILE);
             var docDesc = doc.DocumentNode.Descendants().ToList();
             var toRemove = docDesc[1200];
             var toRemovePrevSibling = toRemove.PreviousSibling;
@@ -88,7 +76,7 @@ namespace HtmlAgilityPack.Tests.Integration
         [Test]
         public void TestReplaceUpdatesSiblings()
         {
-            var doc = GetMshomeDocument();
+            var doc = TestHelper.Load(HTML_FILE);
             var docDesc = doc.DocumentNode.Descendants().ToList();
             var toReplace = docDesc[1200];
             var toReplacePrevSibling = toReplace.PreviousSibling;
@@ -102,7 +90,7 @@ namespace HtmlAgilityPack.Tests.Integration
         [Test]
         public void TestInsertUpdateSiblings()
         {
-            var doc = GetMshomeDocument();
+            var doc = TestHelper.Load(HTML_FILE);
             var newNode = doc.CreateElement("td");
             var toReplace = doc.DocumentNode.ChildNodes[2];
             var toReplacePrevSibling = toReplace.PreviousSibling;

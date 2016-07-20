@@ -1034,6 +1034,34 @@ namespace HtmlAgilityPack
 					yield return node;
 		}
 
+        /// <summary>
+        /// Helper method to get the value of an attribute of this node.
+        /// If the attribute is not found, the default value will be returned.
+        /// </summary>
+        /// <param name="name">The name of the attribute to get. May not be <c>null</c>.</param>
+        /// <returns>The value of the attribute if found, otherwise null.</returns>
+        public string GetAttributeValue(string name)
+        {
+            if (name == null)
+            {
+                throw new ArgumentNullException("name");
+            }
+
+            if (!HasAttributes)
+            {
+                return null;
+            }
+
+            var a = Attributes[name];
+
+            if (a == null)
+            {
+                return null;
+            }
+
+            return a.Value;
+        }
+
 		/// <summary>
 		/// Helper method to get the value of an attribute of this node. If the attribute is not found, the default value will be returned.
 		/// </summary>

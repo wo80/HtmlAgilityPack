@@ -1625,67 +1625,78 @@ namespace HtmlAgilityPack
 
 		private void ReadDocumentEncoding(HtmlNode node)
 		{
-			if (!OptionReadEncoding)
-				return;
-			// format is 
-			// <meta http-equiv="content-type" content="text/html;charset=iso-8859-1" />
+            // Detected formats: 
+            // <meta http-equiv="content-type" content="text/html;charset=name" />
+            // <meta charset="name" />
 
-			// when we append a child, we are in node end, so attributes are already populated
-			if (node._namelength != 4) // quick check, avoids string alloc
-				return;
-			if (node.Name != "meta") // all nodes names are lowercase
-				return;
-			HtmlAttribute att = node.Attributes["http-equiv"];
-			if (att == null)
-				return;
-			if (string.Compare(att.Value, "content-type", StringComparison.OrdinalIgnoreCase) != 0)
-				return;
-			HtmlAttribute content = node.Attributes["content"];
-			if (content != null)
-			{
-				string charset = NameValuePairList.GetNameValuePairsValue(content.Value, "charset");
-				if (!string.IsNullOrEmpty(charset))
-				{
-					// The following check fixes the the bug described at: http://htmlagilitypack.codeplex.com/WorkItem/View.aspx?WorkItemId=25273
-					if (string.Equals(charset, "utf8", StringComparison.OrdinalIgnoreCase))
-						charset = "utf-8";
-					try
-					{
-						_declaredencoding = Encoding.GetEncoding(charset);
-					}
-					catch (ArgumentException)
-					{
-						_declaredencoding = null;
-					}
-					if (_onlyDetectEncoding)
-					{
-						throw new EncodingFoundException(_declaredencoding);
-					}
+            // when we append a child, we are in node end, so attributes are already populated
 
-					if (_streamencoding != null)
-					{
+            if (!OptionReadEncoding) return;
+
+            // quick check, avoids string alloc
+            if (node._namelength != 4) return;
+
+            // all nodes names are lowercase
+            if (node.Name != "meta") return;
+
+            var value = node.GetAttributeValue("charset");
+
+            if (value == null)
+            {
+                value = node.GetAttributeValue("http-equiv");
+
+                if (value == null) return;
+                
+                if (string.Compare(value, "content-type", StringComparison.OrdinalIgnoreCase) != 0)
+                {
+                    return;
+                }
+
+                value = NameValuePairList.GetNameValuePairsValue(node.GetAttributeValue("content"), "charset");
+            }
+
+            if (string.IsNullOrEmpty(value))
+            {
+                return;
+            }
+
+            if (string.Equals(value, "utf8", StringComparison.OrdinalIgnoreCase))
+            {
+                value = "utf-8";
+            }
+
+            try
+            {
+                _declaredencoding = Encoding.GetEncoding(value);
+            }
+            catch (ArgumentException)
+            {
+                _declaredencoding = null;
+            }
+
+            // TODO: remove _onlyDetectEncoding!
+            if (_onlyDetectEncoding)
+            {
+                throw new EncodingFoundException(_declaredencoding);
+            }
+
+            if (_streamencoding != null && _declaredencoding != null)
+            {
 #if SILVERLIGHT || PocketPC || METRO
-						if (_declaredencoding.WebName != _streamencoding.WebName)
+                if (_declaredencoding.WebName != _streamencoding.WebName)
 #else
-						if (_declaredencoding != null)
-							if (_declaredencoding.WindowsCodePage != _streamencoding.WindowsCodePage)
+                if (_declaredencoding.WindowsCodePage != _streamencoding.WindowsCodePage)
 #endif
-							{
-								AddError(
-									HtmlParseErrorCode.CharsetMismatch,
-									_line, _lineposition,
-									_index, node.OuterHtml,
-									"Encoding mismatch between StreamEncoding: " +
-									_streamencoding.WebName + " and DeclaredEncoding: " +
-									_declaredencoding.WebName);
-							}
-					}
-				}
-
-
-
-
-			}
+                {
+                    AddError(
+                        HtmlParseErrorCode.CharsetMismatch,
+                        _line, _lineposition,
+                        _index, node.OuterHtml,
+                        "Encoding mismatch between StreamEncoding: " +
+                        _streamencoding.WebName + " and DeclaredEncoding: " +
+                        _declaredencoding.WebName);
+                }
+            }
 		}
 
 		#endregion
