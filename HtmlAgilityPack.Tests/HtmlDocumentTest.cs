@@ -68,6 +68,16 @@ namespace HtmlAgilityPack.Tests
         }
 
         [Test]
+        public void DescendantsFilterByClass()
+        {
+            var result = _doc1.DocumentNode.Descendants("div")
+                .Where(d => d.Attributes.Contains("class") &&
+                    d.Attributes["class"].Value.Contains("footer"));
+
+            Assert.True(result.Count() > 1);
+        }
+
+        [Test]
         public void FormContentsAvailable()
         {
             var form = _doc1.GetElementById("form");

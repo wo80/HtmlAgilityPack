@@ -380,7 +380,15 @@ namespace HtmlAgilityPack
                                                 fromBase = 10;
                                             }
                                             int code = Convert.ToInt32(codeStr, fromBase);
-                                            sb.Append(Convert.ToChar(code));
+
+                                            if (code < char.MaxValue)
+                                            {
+                                                sb.Append(Convert.ToChar(code));
+                                            }
+                                            else
+                                            {
+                                                sb.Append(char.ConvertFromUtf32(code));
+                                            }
                                         }
                                         catch
                                         {

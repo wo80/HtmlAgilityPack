@@ -36,5 +36,14 @@ namespace HtmlAgilityPack.Tests
 
             Assert.AreEqual(expected, actual);
         }
+
+        [Test]
+        public void DeEntitizeUnicode()
+        {
+            var expected = char.ConvertFromUtf32(128264);
+            var actual = HtmlEntity.DeEntitize("&#128264;");
+
+            Assert.AreEqual(expected, actual);
+        }
     }
 }
