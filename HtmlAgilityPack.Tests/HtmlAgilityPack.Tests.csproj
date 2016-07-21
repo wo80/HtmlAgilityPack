@@ -50,6 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="HtmlDocumentTest.cs" />
+    <Compile Include="HtmlEntityTest.cs" />
     <Compile Include="HtmlNodeTest.cs" />
     <Compile Include="Integration\StackOverflowTest.cs" />
     <Compile Include="Integration\MicrosoftPageTest.cs" />

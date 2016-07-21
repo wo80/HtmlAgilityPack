@@ -54,12 +54,16 @@ namespace HtmlAgilityPack.Tests
         [Test]
         public void GetElementsByName_1()
         {
-            var h1 = _doc1.GetElementsByName("h1");
-            var ul = _doc1.GetElementsByName("ul");
+            var header = _doc1.GetElementsByName("header");
+            var section = _doc1.GetElementsByName("section");
+            var footer = _doc1.GetElementsByName("footer");
+
+            Assert.AreEqual(1, header.Count());
+            Assert.AreEqual(1, section.Count());
+            Assert.AreEqual(1, footer.Count());
+
             var li = _doc1.GetElementsByName("li");
 
-            Assert.AreEqual(1, h1.Count());
-            Assert.AreEqual(1, ul.Count());
             Assert.True(li.Count() > 1);
         }
 

@@ -389,19 +389,15 @@ namespace HtmlAgilityPack
                                     }
                                     else
                                     {
-                                        // named entity?
                                         int code;
-                                        object o = _entityValue[entity.ToString()];
-                                        if (o == null)
+                                        if (_entityValue.TryGetValue(entity.ToString(), out code))
                                         {
-                                            // nope
-                                            sb.Append("&" + entity + ";");
+                                            sb.Append(Convert.ToChar(code));
                                         }
                                         else
                                         {
-                                            // we found one
-                                            code = (int)o;
-                                            sb.Append(Convert.ToChar(code));
+                                            // nope
+                                            sb.Append("&" + entity + ";");
                                         }
                                     }
                                     entity.Remove(0, entity.Length);
