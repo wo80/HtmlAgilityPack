@@ -11,23 +11,30 @@ namespace HtmlAgilityPack.Tests
     public class HtmlEntityTest
     {
         [Test]
+        public void EntitizeUnknownEntity()
+        {
+            var expected = "&#64257;";
+            var actual = HtmlEntity.Entitize("ﬁ");
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [Test]
         public void DeEntitizeKnownEntity()
         {
             var expected = "Ren & Stimpy";
+            var actual = HtmlEntity.DeEntitize("Ren &amp; Stimpy");
 
-            var text = HtmlEntity.DeEntitize("Ren &amp; Stimpy");
-
-            Assert.AreEqual(expected, text);
+            Assert.AreEqual(expected, actual);
         }
 
         [Test]
         public void DeEntitizeUnknownEntity()
         {
             var expected = "Some &stupid; entity.";
+            var actual = HtmlEntity.DeEntitize(expected);
 
-            var text = HtmlEntity.DeEntitize(expected);
-
-            Assert.AreEqual(expected, text);
+            Assert.AreEqual(expected, actual);
         }
     }
 }

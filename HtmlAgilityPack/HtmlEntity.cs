@@ -490,9 +490,9 @@ namespace HtmlAgilityPack
         /// </summary>
         /// <param name="text">The source text.</param>
         /// <param name="useNames">If set to false, the function will not use known entities name. Default is true.</param>
-        /// <param name="entitizeQuotAmpAndLtGt">If set to true, the [quote], [ampersand], [lower than] and [greather than] characters will be entitized.</param>
+        /// <param name="entitizeSpecial">If set to true, the [quote], [ampersand], [lower than] and [greather than] characters will be entitized.</param>
         /// <returns>The result text</returns>
-        public static string Entitize(string text, bool useNames, bool entitizeQuotAmpAndLtGt)
+        public static string Entitize(string text, bool useNames, bool entitizeSpecial)
         {
             if (text == null)
             {
@@ -504,22 +504,47 @@ namespace HtmlAgilityPack
                 return text;
             }
 
-            StringBuilder sb = new StringBuilder(text.Length);
+            var sb = new StringBuilder(text.Length);
+
             for (int i = 0; i < text.Length; i++)
             {
                 int code = text[i];
-                if ((code > 127) ||
-                    (entitizeQuotAmpAndLtGt && ((code == 34) || (code == 38) || (code == 60) || (code == 62))))
-                {
-                    string entity = _entityName[code];
 
-                    if ((entity == null) || (!useNames))
+                if (code > 127)
+                {
+                    string entity;
+
+                    if (useNames && _entityName.TryGetValue(code, out entity))
                     {
-                        sb.Append("&#" + code + ";");
+                        sb.Append("&" + entity + ";");
                     }
                     else
                     {
-                        sb.Append("&" + entity + ";");
+                        sb.Append("&#" + code + ";");
+                    }
+                }
+                else if (entitizeSpecial)
+                {
+                    switch (code)
+                    {
+                        case '&':
+                            sb.Append("&amp;");
+                            break;
+                        case '<':
+                            sb.Append("&lt;");
+                            break;
+                        case '>':
+                            sb.Append("&gt;");
+                            break;
+                        case '"':
+                            sb.Append("&quot;");
+                            break;
+                        case '\'':
+                            sb.Append("&apos;");
+                            break;
+                        default:
+                            sb.Append(text[i]);
+                            break;
                     }
                 }
                 else
