@@ -491,17 +491,34 @@ namespace HtmlAgilityPack
 		/// </summary>
 		/// <param name="id">The attribute id to match. May not be null.</param>
 		/// <returns>The HTML node with the matching id or null if not found.</returns>
-		public HtmlNode GetElementbyId(string id)
+		public HtmlNode GetElementById(string id)
 		{
 			if (id == null)
 			{
 				throw new ArgumentNullException("id");
 			}
+
 			if (Nodesid == null)
 			{
 				throw new Exception(HtmlExceptionUseIdAttributeFalse);
 			}
-			return Nodesid.ContainsKey(id.ToLower()) ? Nodesid[id.ToLower()] : null;
+
+			return Nodesid.GetValueOrNull(id.ToLower());
+		}
+
+        /// <summary>
+        /// Gets all HTML nodes with the specified tag name.
+        /// </summary>
+        /// <param name="name">The element name to match. May not be null.</param>
+        /// <returns>HTML nodes with matching tag name.</returns>
+		public IEnumerable<HtmlNode> GetElementsByName(string name)
+		{
+            if (name == null)
+			{
+                throw new ArgumentNullException("name");
+			}
+
+            return _documentnode.Descendants(name);
 		}
 
 		#endregion

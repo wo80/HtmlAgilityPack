@@ -51,7 +51,7 @@
   <ItemGroup>
     <Compile Include="HtmlDocumentTest.cs" />
     <Compile Include="HtmlNodeTest.cs" />
-    <Compile Include="Integration\EncodingTest.cs" />
+    <Compile Include="Integration\StackOverflowTest.cs" />
     <Compile Include="Integration\MicrosoftPageTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestHelper.cs" />
@@ -73,12 +73,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\encoding-iso-8859-test-1.htm" />
-    <None Include="Resources\encoding-iso-8859-test-2.htm" />
-    <None Include="Resources\encoding-iso-8859-test-3.htm" />
-    <None Include="Resources\encoding-utf8-test-1.htm" />
-    <None Include="Resources\encoding-utf8-test-2.htm" />
-    <None Include="Resources\encoding-utf8-test-3.htm" />
+    <None Include="Resources\test-page-1.htm" />
+    <None Include="Resources\test-page-2.htm" />
+    <None Include="Resources\test-page-3.htm" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
