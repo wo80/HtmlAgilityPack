@@ -54,6 +54,7 @@
     <Compile Include="HtmlNodeType.cs" />
     <Compile Include="HtmlParseError.cs" />
     <Compile Include="HtmlParseErrorCode.cs" />
+    <Compile Include="HtmlParser.cs" />
     <Compile Include="HtmlTextNode.cs" />
     <Compile Include="HtmlWriter.cs" />
     <Compile Include="NameValuePairList.cs" />

@@ -145,6 +145,8 @@ namespace HtmlAgilityPack
 					break;
 			}
 
+            // TODO: Openednodes
+            /*
 			if (_ownerdocument.Openednodes != null)
 			{
 				if (!Closed)
@@ -158,6 +160,7 @@ namespace HtmlAgilityPack
 					}
 				}
 			}
+            //*/
 
 			if ((-1 != index) || (type == HtmlNodeType.Comment) || (type == HtmlNodeType.Text)) return;
 			// innerhtml and outerhtml must be calculated
@@ -1484,7 +1487,9 @@ namespace HtmlAgilityPack
 			}
 
 			if (!Closed)
-			{
+            {
+                // TODO: Openednodes
+                /*
 				_endnode = endnode;
 
 				if (_ownerdocument.Openednodes != null)
@@ -1506,7 +1511,8 @@ namespace HtmlAgilityPack
 
 				// update full length
 				_outerlength = (endnode._outerstartindex + endnode._outerlength) - _outerstartindex;
-			}
+                //*/
+            }
 		}
 
 		internal string GetId()
