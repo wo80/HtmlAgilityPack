@@ -70,7 +70,8 @@ namespace HtmlAgilityPack
             {
                 if (_name == null)
                 {
-                    _name = _ownerdocument.Text.Substring(_namestartindex, _namelength);
+                    throw new NullReferenceException("HtmlParser failed: error in HtmlParser.PushAttributeNameEnd");
+                    // TODO: Name
                 }
                 return _name.ToLower();
             }
@@ -138,7 +139,8 @@ namespace HtmlAgilityPack
             {
                 if (_value == null)
                 {
-                    _value = _ownerdocument.Text.Substring(_valuestartindex, _valuelength);
+                    throw new NullReferenceException("HtmlParser failed: error in HtmlParser.PushAttributeValueEnd");
+                    // TODO: Value
                 }
                 return _value;
             }

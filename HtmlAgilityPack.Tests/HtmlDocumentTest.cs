@@ -25,7 +25,15 @@ namespace HtmlAgilityPack.Tests
         public void Test_1()
         {
             var doc = HtmlDocument.Parse("<html><head><title>Hello</title></head><body><p id=\"hello\">Hello</p></body></html>");
-            Assert.AreEqual(1, 1);
+
+            var e = doc.GetElementsByName("p");
+            
+            Assert.AreEqual(1, e.Count());
+
+            var p = e.FirstOrDefault();
+            
+            Assert.IsTrue(p.HasAttributes);
+            Assert.AreEqual("hello", p.GetAttributeValue("id"));
         }
 
         [Test]

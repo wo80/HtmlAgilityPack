@@ -7,6 +7,9 @@ using System.Xml;
 
 namespace HtmlAgilityPack
 {
+    /// <summary>
+    /// The HTML parser.
+    /// </summary>
     public class HtmlParser
     {
         private int _c;
@@ -26,9 +29,8 @@ namespace HtmlAgilityPack
 
         private HtmlAttribute _currentattribute;
 
-        private HtmlNode _currentnode;
-        private HtmlNode _documentnode;
-        private HtmlNode _lastparentnode;
+        internal Encoding _declaredencoding;
+        private Encoding _streamencoding;
 
         internal string Text;
 
@@ -39,8 +41,16 @@ namespace HtmlAgilityPack
 
         HtmlDocument _document;
 
+        private HtmlNode _currentnode;
+        private HtmlNode _documentnode;
+        private HtmlNode _lastparentnode;
+
         HtmlDocumentOptions Options;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="HtmlParser" /> class.
+        /// </summary>
+        /// <param name="document">The owner document.</param>
         public HtmlParser(HtmlDocument document)
         {
             _document = document;
@@ -57,43 +67,7 @@ namespace HtmlAgilityPack
             }
         }
 
-        public void FixOpenedNodes()
-        {
-            if (Openednodes == null) return;
-
-            foreach (HtmlNode node in Openednodes.Values)
-            {
-                if (!node._starttag) // already reported
-                {
-                    continue;
-                }
-
-                string html;
-                if (Options.ExtractErrorSourceText)
-                {
-                    html = node.OuterHtml;
-                    if (html.Length > Options.ExtractErrorSourceTextMaxLength)
-                    {
-                        html = html.Substring(0, Options.ExtractErrorSourceTextMaxLength);
-                    }
-                }
-                else
-                {
-                    html = string.Empty;
-                }
-                AddError(
-                    HtmlParseErrorCode.TagNotClosed,
-                    node._line, node._lineposition,
-                    node._streamposition, html,
-                    "End tag </" + node.Name + "> was not found");
-            }
-
-            // we don't need this anymore
-            Openednodes.Clear();
-            Openednodes = null;
-        }
-
-        public void Parse()
+        public HtmlNode Parse(string text)
         {
             int lastquote = 0;
 
@@ -105,10 +79,15 @@ namespace HtmlAgilityPack
             _lineposition = 1;
             _maxlineposition = 1;
 
+            this.Text = text;
+
             _state = ParseState.Text;
             _oldstate = _state;
+
+            _documentnode = CreateNode(HtmlNodeType.Document, 0);
             _documentnode._innerlength = Text.Length;
             _documentnode._outerlength = Text.Length;
+
             _remainderOffset = Text.Length;
 
             _lastparentnode = _documentnode;
@@ -471,6 +450,44 @@ namespace HtmlAgilityPack
 
             // we don't need this anymore
             Lastnodes.Clear();
+
+            return _documentnode;
+        }
+
+        public void FixOpenedNodes()
+        {
+            if (Openednodes == null) return;
+
+            foreach (HtmlNode node in Openednodes.Values)
+            {
+                if (!node._starttag) // already reported
+                {
+                    continue;
+                }
+
+                string html;
+                if (Options.ExtractErrorSourceText)
+                {
+                    html = node.OuterHtml;
+                    if (html.Length > Options.ExtractErrorSourceTextMaxLength)
+                    {
+                        html = html.Substring(0, Options.ExtractErrorSourceTextMaxLength);
+                    }
+                }
+                else
+                {
+                    html = string.Empty;
+                }
+                AddError(
+                    HtmlParseErrorCode.TagNotClosed,
+                    node._line, node._lineposition,
+                    node._streamposition, //html,
+                    "End tag </" + node.Name + "> was not found");
+            }
+
+            // we don't need this anymore
+            Openednodes.Clear();
+            Openednodes = null;
         }
 
         /// <summary>
@@ -501,17 +518,29 @@ namespace HtmlAgilityPack
 
         internal HtmlNode CreateNode(HtmlNodeType type, int index)
         {
-            switch (type)
+            if (type == HtmlNodeType.Comment)
             {
-                case HtmlNodeType.Comment:
-                    return new HtmlCommentNode(_document, index);
-
-                case HtmlNodeType.Text:
-                    return new HtmlTextNode(_document, index);
-
-                default:
-                    return new HtmlNode(type, _document, index);
+                return new HtmlCommentNode(_document, index);
             }
+
+            if (type == HtmlNodeType.Text)
+            {
+                return new HtmlTextNode(_document, index);
+            }
+
+            var node = new HtmlNode(type, _document, index);
+
+            if (Openednodes != null && !node.Closed)
+            {
+                // -1 means the node comes from public
+                if (index != -1)
+                {
+                    // we use the index as the key
+                    Openednodes.Add(index, node);
+                }
+            }
+
+            return node;
         }
 
         internal void UpdateLastParentNode()
@@ -527,11 +556,62 @@ namespace HtmlAgilityPack
                 _lastparentnode = _documentnode;
         }
 
+        internal void CloseNode(HtmlNode node, HtmlNode endnode, int level = 0)
+        {
+            if (level > HtmlDocument.MaxDepthLevel)
+            {
+                throw new ArgumentException(HtmlNode.DepthLevelExceptionMessage);
+            }
+
+            if (!_document.Options.AutoCloseOnEnd)
+            {
+                // close all children
+                if (node._childnodes != null)
+                {
+                    foreach (HtmlNode child in node._childnodes)
+                    {
+                        if (child.Closed)
+                            continue;
+
+                        // create a fake closer node
+                        HtmlNode close = new HtmlNode(node.NodeType, _document, -1);
+                        close._endnode = close;
+                        CloseNode(child, close, level + 1);
+                    }
+                }
+            }
+
+            if (!node.Closed)
+            {
+                node._endnode = endnode;
+
+                if (Openednodes != null)
+                    Openednodes.Remove(node._outerstartindex);
+
+                HtmlNode self = Lastnodes.GetValueOrNull(node.Name);
+                if (self == node)
+                {
+                    Lastnodes.Remove(node.Name);
+                    UpdateLastParentNode();
+                }
+
+                if (endnode == node)
+                    return;
+
+                // create an inner section
+                node._innerstartindex = node._outerstartindex + node._outerlength;
+                node._innerlength = endnode._outerstartindex - node._innerstartindex;
+
+                // update full length
+                node._outerlength = (endnode._outerstartindex + endnode._outerlength) - node._outerstartindex;
+            }
+        }
+
         #region Private Methods
 
-        private void AddError(HtmlParseErrorCode code, int line, int linePosition, int streamPosition, string sourceText, string reason)
+        private void AddError(HtmlParseErrorCode code, int line, int linePosition, int streamPosition, string reason)
         {
-            HtmlParseError err = new HtmlParseError(code, line, linePosition, streamPosition, sourceText, reason);
+            HtmlParseError err = new HtmlParseError(code, line, linePosition, streamPosition, null, reason);
             _parseerrors.Add(err);
             return;
         }
@@ -552,7 +632,7 @@ namespace HtmlAgilityPack
                 if (HtmlNode.IsClosedElement(_currentnode.Name))
                 {
                     // </br> will be seen as <br>
-                    _currentnode.CloseNode(_currentnode);
+                    CloseNode(_currentnode, _currentnode);
 
                     // add to parent node
                     if (_lastparentnode != null)
@@ -606,7 +686,7 @@ namespace HtmlAgilityPack
                             AddError(
                                 HtmlParseErrorCode.EndTagNotRequired,
                                 _currentnode._line, _currentnode._lineposition,
-                                _currentnode._streamposition, _currentnode.OuterHtml,
+                                _currentnode._streamposition, //_currentnode.OuterHtml,
                                 "End tag </" + _currentnode.Name + "> is not required");
                         }
                         else
@@ -615,7 +695,7 @@ namespace HtmlAgilityPack
                             AddError(
                                 HtmlParseErrorCode.TagNotOpened,
                                 _currentnode._line, _currentnode._lineposition,
-                                _currentnode._streamposition, _currentnode.OuterHtml,
+                                _currentnode._streamposition, //_currentnode.OuterHtml,
                                 "Start tag <" + _currentnode.Name + "> was not found");
                             error = true;
                         }
@@ -633,7 +713,7 @@ namespace HtmlAgilityPack
                         AddError(
                             HtmlParseErrorCode.EndTagInvalidHere,
                             _currentnode._line, _currentnode._lineposition,
-                            _currentnode._streamposition, _currentnode.OuterHtml,
+                            _currentnode._streamposition, //_currentnode.OuterHtml,
                             "End tag </" + _currentnode.Name + "> invalid here");
                         error = true;
                     }
@@ -642,7 +722,7 @@ namespace HtmlAgilityPack
                 if (!error)
                 {
                     Lastnodes[_currentnode.Name] = prev._prevwithsamename;
-                    prev.CloseNode(_currentnode);
+                    CloseNode(prev, _currentnode);
                 }
             }
 
@@ -727,7 +807,7 @@ namespace HtmlAgilityPack
             // create a fake closer node
             HtmlNode close = new HtmlNode(prev.NodeType, _document, -1);
             close._endnode = close;
-            prev.CloseNode(close);
+            CloseNode(prev, close);
         }
 
         private void FixNestedTags()
@@ -841,7 +921,9 @@ namespace HtmlAgilityPack
 
         private void PushAttributeNameEnd(int index)
         {
+            // TODO: Attribute Name
             _currentattribute._namelength = index - _currentattribute._namestartindex;
+            _currentattribute._name = Text.Substring(_currentattribute._namestartindex, _currentattribute._namelength);
             _currentnode.Attributes.Append(_currentattribute);
         }
 
@@ -856,7 +938,9 @@ namespace HtmlAgilityPack
 
         private void PushAttributeValueEnd(int index)
         {
+            // TODO: Attribute Value
             _currentattribute._valuelength = index - _currentattribute._valuestartindex;
+            _currentattribute._value = Text.Substring(_currentattribute._valuestartindex, _currentattribute._valuelength);
         }
 
         private void PushAttributeValueStart(int index)
@@ -891,6 +975,9 @@ namespace HtmlAgilityPack
             }
             else
             {
+                // TODO: Node Name
+                _currentnode.Name = Text.Substring(_currentnode._namestartindex, _currentnode._namelength);
+
                 if ((_currentnode._starttag) && (_lastparentnode != _currentnode))
                 {
                     // add to parent node
@@ -970,9 +1057,6 @@ namespace HtmlAgilityPack
             _currentnode._streamposition = index;
         }
 
-        private Encoding _declaredencoding;
-        private Encoding _streamencoding;
-
         private void ReadDocumentEncoding(HtmlNode node)
         {
             // Detected formats: 
@@ -1041,7 +1125,7 @@ namespace HtmlAgilityPack
                     AddError(
                         HtmlParseErrorCode.CharsetMismatch,
                         _line, _lineposition,
-                        _index, node.OuterHtml,
+                        _index, //node.OuterHtml,
                         "Encoding mismatch between StreamEncoding: " +
                         _streamencoding.WebName + " and DeclaredEncoding: " +
                         _declaredencoding.WebName);

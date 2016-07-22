@@ -145,25 +145,10 @@ namespace HtmlAgilityPack
 					break;
 			}
 
-            // TODO: Openednodes
-            /*
-			if (_ownerdocument.Openednodes != null)
-			{
-				if (!Closed)
-				{
-					// we use the index as the key
-
-					// -1 means the node comes from public
-					if (-1 != index)
-					{
-						_ownerdocument.Openednodes.Add(index, this);
-					}
-				}
-			}
-            //*/
-
-			if ((-1 != index) || (type == HtmlNodeType.Comment) || (type == HtmlNodeType.Text)) return;
-			// innerhtml and outerhtml must be calculated
+			if ((index != -1) || (type == HtmlNodeType.Comment) || (type == HtmlNodeType.Text))
+                return;
+			
+            // innerhtml and outerhtml must be calculated
             SetChanged();
 		}
 
@@ -339,7 +324,7 @@ namespace HtmlAgilityPack
 				if (_innerstartindex < 0)
 					return string.Empty;
 
-				return _ownerdocument.Text.Substring(_innerstartindex, _innerlength);
+                throw new Exception(); // TODO: InnerHtml
 			}
 			set
 			{
@@ -413,8 +398,11 @@ namespace HtmlAgilityPack
 			{
 				if (_optimizedName == null)
 				{
-					if (_name == null)
-						Name = _ownerdocument.Text.Substring(_namestartindex, _namelength);
+                    if (_name == null)
+                    {
+                        throw new NullReferenceException("HtmlParser failed: error in HtmlParser.PushNodeEnd");
+                        // TODO: Name
+                    }
 
 					if (_name == null)
 						_optimizedName = string.Empty;
@@ -475,7 +463,7 @@ namespace HtmlAgilityPack
 					return string.Empty;
 				}
 
-				return _ownerdocument.Text.Substring(_outerstartindex, _outerlength);
+                throw new Exception(); // TODO: OuterHtml
 			}
 		}
 
@@ -810,19 +798,26 @@ namespace HtmlAgilityPack
 		/// <returns>The cloned node.</returns>
 		public HtmlNode CloneNode(bool deep)
 		{
-			HtmlNode node = _ownerdocument.CreateNode(_nodetype);
+            if (_nodetype == HtmlNodeType.Comment)
+            {
+                return new HtmlCommentNode(_ownerdocument, -1)
+                {
+                    Name = this.Name,
+                    Comment = ((HtmlCommentNode)this).Comment
+                };
+            }
+            else if (_nodetype == HtmlNodeType.Text)
+            {
+                return new HtmlTextNode(_ownerdocument, -1)
+                {
+                    Name = this.Name,
+                    Text = ((HtmlTextNode)this).Text
+                };
+            }
+
+			var node = new HtmlNode(_nodetype, _ownerdocument, -1);
+
 			node.Name = Name;
-
-			switch (_nodetype)
-			{
-				case HtmlNodeType.Comment:
-					((HtmlCommentNode)node).Comment = ((HtmlCommentNode)this).Comment;
-					return node;
-
-				case HtmlNodeType.Text:
-					((HtmlTextNode)node).Text = ((HtmlTextNode)this).Text;
-					return node;
-			}
 
 			// attributes
 			if (HasAttributes)
@@ -844,6 +839,7 @@ namespace HtmlAgilityPack
 					node._endnode._attributes.Append(newatt);
 				}
 			}
+
 			if (!deep)
 			{
 				return node;
@@ -857,9 +853,9 @@ namespace HtmlAgilityPack
 			// child nodes
 			foreach (HtmlNode child in _childnodes)
 			{
-				HtmlNode newchild = child.Clone();
-				node.AppendChild(newchild);
+				node.AppendChild(child.Clone());
 			}
+
 			return node;
 		}
 
@@ -1460,60 +1456,6 @@ namespace HtmlAgilityPack
             _outerhtml = writer.WriteTo(this);
             _changed = false;
         }
-
-		internal void CloseNode(HtmlNode endnode, int level=0)
-        {
-            if (level > HtmlDocument.MaxDepthLevel)
-            {
-                throw new ArgumentException(HtmlNode.DepthLevelExceptionMessage);
-            }
-
-            if (!_ownerdocument.Options.AutoCloseOnEnd)
-			{
-				// close all children
-				if (_childnodes != null)
-				{
-					foreach (HtmlNode child in _childnodes)
-					{
-						if (child.Closed)
-							continue;
-
-						// create a fake closer node
-						HtmlNode close = new HtmlNode(NodeType, _ownerdocument, -1);
-						close._endnode = close;
-						child.CloseNode(close, level + 1);
-					}
-				}
-			}
-
-			if (!Closed)
-            {
-                // TODO: Openednodes
-                /*
-				_endnode = endnode;
-
-				if (_ownerdocument.Openednodes != null)
-					_ownerdocument.Openednodes.Remove(_outerstartindex);
-
-				HtmlNode self = _ownerdocument.Lastnodes.GetValueOrNull(Name);
-				if (self == this)
-				{
-					_ownerdocument.Lastnodes.Remove(Name);
-					_ownerdocument.UpdateLastParentNode();
-				}
-
-				if (endnode == this)
-					return;
-
-				// create an inner section
-				_innerstartindex = _outerstartindex + _outerlength;
-				_innerlength = endnode._outerstartindex - _innerstartindex;
-
-				// update full length
-				_outerlength = (endnode._outerstartindex + endnode._outerlength) - _outerstartindex;
-                //*/
-            }
-		}
 
 		internal string GetId()
 		{

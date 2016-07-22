@@ -31,10 +31,6 @@ namespace HtmlAgilityPack
         private string _remainder;
         private int _remainderOffset;
 
-		internal string Text;
-
-        HtmlParser parser;
-
         /// <summary>
         /// HtmlDocument options.
         /// </summary>
@@ -56,7 +52,6 @@ namespace HtmlAgilityPack
 		/// </summary>
 		public HtmlDocument()
 		{
-			_documentnode = CreateNode(HtmlNodeType.Document, 0);
 		}
 
         #endregion
@@ -201,6 +196,9 @@ namespace HtmlAgilityPack
             }
 
             var doc = new HtmlDocument();
+
+            var parser = new HtmlParser(doc);
+
             var options = doc.Options;
 
             //doc._onlyDetectEncoding = false;
@@ -234,19 +232,14 @@ namespace HtmlAgilityPack
             {
                 doc._streamencoding = null;
             }
-            doc._declaredencoding = null;
 
-            doc.Text = reader.ReadToEnd();
-            doc._documentnode = doc.CreateNode(HtmlNodeType.Document, 0);
-
-            doc.parser = new HtmlParser(doc);
-            doc.parser.Parse();
+            doc._documentnode = parser.Parse(reader.ReadToEnd());
+            doc._declaredencoding = parser._declaredencoding;
 
             if (doc.Options.CheckSyntax)
             {
-                doc.parser.FixOpenedNodes();
+                parser.FixOpenedNodes();
             }
-
 
             return doc;
         }
@@ -358,12 +351,12 @@ namespace HtmlAgilityPack
 		/// <returns>The new HTML attribute.</returns>
 		public HtmlAttribute CreateAttribute(string name)
 		{
-			if (name == null)
-				throw new ArgumentNullException("name");
+            if (name == null)
+            {
+                throw new ArgumentNullException("name");
+            }
 
-			HtmlAttribute att = CreateAttribute();
-			att.Name = name;
-			return att;
+            return new HtmlAttribute(this) { Name = name };
 		}
 
 		/// <summary>
@@ -388,8 +381,8 @@ namespace HtmlAgilityPack
 		/// </summary>
 		/// <returns>The new HTML comment node.</returns>
 		public HtmlCommentNode CreateComment()
-		{
-			return (HtmlCommentNode)CreateNode(HtmlNodeType.Comment);
+        {
+            return new HtmlCommentNode(this, -1);
 		}
 
 		/// <summary>
@@ -403,9 +396,8 @@ namespace HtmlAgilityPack
 			{
 				throw new ArgumentNullException("comment");
 			}
-			HtmlCommentNode c = CreateComment();
-			c.Comment = comment;
-			return c;
+
+			return new HtmlCommentNode(this, -1) { Comment = comment };
 		}
 
 		/// <summary>
@@ -419,9 +411,8 @@ namespace HtmlAgilityPack
 			{
 				throw new ArgumentNullException("name");
 			}
-			HtmlNode node = CreateNode(HtmlNodeType.Element);
-			node.Name = name;
-			return node;
+
+            return new HtmlNode(HtmlNodeType.Element, this, -1) { Name = name };
 		}
 
 		/// <summary>
@@ -430,7 +421,7 @@ namespace HtmlAgilityPack
 		/// <returns>The new HTML text node.</returns>
 		public HtmlTextNode CreateTextNode()
 		{
-			return (HtmlTextNode)CreateNode(HtmlNodeType.Text);
+            return new HtmlTextNode(this, -1);
 		}
 
 		/// <summary>
@@ -487,36 +478,6 @@ namespace HtmlAgilityPack
 		#endregion
 
         #region Internal Methods
-
-        internal void UpdateLastParentNode()
-        {
-            throw new Exception();
-        }
-
-		internal HtmlAttribute CreateAttribute()
-		{
-			return new HtmlAttribute(this);
-		}
-
-		internal HtmlNode CreateNode(HtmlNodeType type)
-		{
-			return CreateNode(type, -1);
-		}
-
-		internal HtmlNode CreateNode(HtmlNodeType type, int index)
-		{
-			switch (type)
-			{
-				case HtmlNodeType.Comment:
-					return new HtmlCommentNode(this, index);
-
-				case HtmlNodeType.Text:
-					return new HtmlTextNode(this, index);
-
-				default:
-					return new HtmlNode(type, this, index);
-			}
-		}
 
 		internal Encoding GetOutEncoding()
 		{
