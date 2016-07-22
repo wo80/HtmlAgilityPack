@@ -28,9 +28,6 @@ namespace HtmlAgilityPack
 
         private List<HtmlParseError> _parseerrors;
 
-        private string _remainder;
-        private int _remainderOffset;
-
         /// <summary>
         /// HtmlDocument options.
         /// </summary>
@@ -98,24 +95,6 @@ namespace HtmlAgilityPack
         public IEnumerable<HtmlParseError> ParseErrors
         {
             get { return _parseerrors; }
-        }
-
-        /// <summary>
-        /// Gets the remaining text.
-        /// Will always be null if OptionStopperNodeName is null.
-        /// </summary>
-        public string Remainder
-        {
-            get { return _remainder; }
-        }
-
-        /// <summary>
-        /// Gets the offset of Remainder in the original Html text.
-        /// If OptionStopperNodeName is null, this will return the length of the original Html text.
-        /// </summary>
-        public int RemainderOffset
-        {
-            get { return _remainderOffset; }
         }
 
         /// <summary>

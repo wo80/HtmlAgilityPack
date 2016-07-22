@@ -22,7 +22,6 @@ namespace HtmlAgilityPack
         private int _remainderOffset;
 
         private bool _fullcomment;
-        private bool _onlyDetectEncoding;
 
         private ParseState _oldstate;
         private ParseState _state;
@@ -1105,12 +1104,6 @@ namespace HtmlAgilityPack
             catch (ArgumentException)
             {
                 _declaredencoding = null;
-            }
-
-            // TODO: remove _onlyDetectEncoding!
-            if (_onlyDetectEncoding)
-            {
-                throw new EncodingFoundException(_declaredencoding);
             }
 
             var streamEncoding = _document.StreamEncoding;
