@@ -176,9 +176,9 @@ namespace HtmlAgilityPack
             HtmlNode next = null;
             HtmlNode prev = null;
 
-            if (index > 0)            
+            if (index > 0)
                 prev = _items[index - 1];
-            
+
             if (index < _items.Count)
                 next = _items[index];
 
@@ -188,7 +188,7 @@ namespace HtmlAgilityPack
             {
                 if (node == prev)
                     throw new InvalidProgramException("Unexpected error.");
-                
+
                 prev._nextnode = node;
             }
 
@@ -198,7 +198,7 @@ namespace HtmlAgilityPack
             node._prevnode = prev;
             if (next == node)
                 throw new InvalidProgramException("Unexpected error.");
-            
+
             node._nextnode = next;
             node._parentnode = _parentnode;
         }
@@ -281,7 +281,7 @@ namespace HtmlAgilityPack
             HtmlNode last = null;
             if (_items.Count > 0)
                 last = _items[_items.Count - 1];
-            
+
             _items.Add(node);
             node._prevnode = last;
             node._nextnode = null;
@@ -289,7 +289,7 @@ namespace HtmlAgilityPack
             if (last == null) return;
             if (last == node)
                 throw new InvalidProgramException("Unexpected error.");
-            
+
             last._nextnode = node;
         }
 

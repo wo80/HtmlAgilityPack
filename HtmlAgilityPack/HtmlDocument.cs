@@ -8,25 +8,25 @@ using System.Xml;
 
 namespace HtmlAgilityPack
 {
-	/// <summary>
-	/// Represents a complete HTML document.
-	/// </summary>
-	public class HtmlDocument
-	{
+    /// <summary>
+    /// Represents a complete HTML document.
+    /// </summary>
+    public class HtmlDocument
+    {
         /// <summary>
         /// Defines the max level we would go deep into the html document
         /// </summary>
         private static int _maxDepthLevel = int.MaxValue;
 
-		//private bool _onlyDetectEncoding;
-		private Encoding _declaredencoding;
-		private Encoding _streamencoding;
+        //private bool _onlyDetectEncoding;
+        private Encoding _declaredencoding;
+        private Encoding _streamencoding;
 
-		private HtmlNode _documentnode;
+        private HtmlNode _documentnode;
 
-		internal Dictionary<string, HtmlNode> Nodesid;
+        internal Dictionary<string, HtmlNode> Nodesid;
 
-		private List<HtmlParseError> _parseerrors = new List<HtmlParseError>();
+        private List<HtmlParseError> _parseerrors = new List<HtmlParseError>();
 
         private string _remainder;
         private int _remainderOffset;
@@ -36,23 +36,23 @@ namespace HtmlAgilityPack
         /// </summary>
         public readonly HtmlDocumentOptions Options = new HtmlDocumentOptions();
 
-		#region Static Members
+        #region Static Members
 
-		internal static readonly string HtmlExceptionRefNotChild = "Reference node must be a child of this node";
+        internal static readonly string HtmlExceptionRefNotChild = "Reference node must be a child of this node";
 
-		internal static readonly string HtmlExceptionUseIdAttributeFalse =
-			"You need to set UseIdAttribute property to true to enable this feature";
+        internal static readonly string HtmlExceptionUseIdAttributeFalse =
+            "You need to set UseIdAttribute property to true to enable this feature";
 
-		#endregion
+        #endregion
 
-		#region Constructors
+        #region Constructors
 
-		/// <summary>
-		/// Creates an instance of an HTML document.
-		/// </summary>
-		public HtmlDocument()
-		{
-		}
+        /// <summary>
+        /// Creates an instance of an HTML document.
+        /// </summary>
+        public HtmlDocument()
+        {
+        }
 
         #endregion
 
@@ -67,66 +67,66 @@ namespace HtmlAgilityPack
             set { _maxDepthLevel = value; }
         }
 
-		/// <summary>
-		/// Gets the document's declared encoding.
-		/// Declared encoding is determined using the meta http-equiv="content-type" content="text/html;charset=XXXXX" html node.
-		/// </summary>
-		public Encoding DeclaredEncoding
-		{
-			get { return _declaredencoding; }
-		}
+        /// <summary>
+        /// Gets the document's declared encoding.
+        /// Declared encoding is determined using the meta http-equiv="content-type" content="text/html;charset=XXXXX" html node.
+        /// </summary>
+        public Encoding DeclaredEncoding
+        {
+            get { return _declaredencoding; }
+        }
 
-		/// <summary>
-		/// Gets the root node of the document.
-		/// </summary>
-		public HtmlNode DocumentNode
-		{
-			get { return _documentnode; }
-		}
+        /// <summary>
+        /// Gets the root node of the document.
+        /// </summary>
+        public HtmlNode DocumentNode
+        {
+            get { return _documentnode; }
+        }
 
-		/// <summary>
-		/// Gets the document's output encoding.
-		/// </summary>
-		public Encoding Encoding
-		{
-			get { return GetOutEncoding(); }
-		}
+        /// <summary>
+        /// Gets the document's output encoding.
+        /// </summary>
+        public Encoding Encoding
+        {
+            get { return GetOutEncoding(); }
+        }
 
-		/// <summary>
-		/// Gets a list of parse errors found in the document.
-		/// </summary>
-		public IEnumerable<HtmlParseError> ParseErrors
-		{
-			get { return _parseerrors; }
-		}
+        /// <summary>
+        /// Gets a list of parse errors found in the document.
+        /// </summary>
+        public IEnumerable<HtmlParseError> ParseErrors
+        {
+            get { return _parseerrors; }
+        }
 
-		/// <summary>
-		/// Gets the remaining text.
-		/// Will always be null if OptionStopperNodeName is null.
-		/// </summary>
-		public string Remainder
-		{
-			get { return _remainder; }
-		}
+        /// <summary>
+        /// Gets the remaining text.
+        /// Will always be null if OptionStopperNodeName is null.
+        /// </summary>
+        public string Remainder
+        {
+            get { return _remainder; }
+        }
 
-		/// <summary>
-		/// Gets the offset of Remainder in the original Html text.
-		/// If OptionStopperNodeName is null, this will return the length of the original Html text.
-		/// </summary>
-		public int RemainderOffset
-		{
-			get { return _remainderOffset; }
-		}
+        /// <summary>
+        /// Gets the offset of Remainder in the original Html text.
+        /// If OptionStopperNodeName is null, this will return the length of the original Html text.
+        /// </summary>
+        public int RemainderOffset
+        {
+            get { return _remainderOffset; }
+        }
 
-		/// <summary>
-		/// Gets the document's stream encoding.
-		/// </summary>
-		public Encoding StreamEncoding
-		{
-			get { return _streamencoding; }
-		}
+        /// <summary>
+        /// Gets the document's stream encoding.
+        /// </summary>
+        public Encoding StreamEncoding
+        {
+            get { return _streamencoding; }
+        }
 
-		#endregion
+        #endregion
 
         #region Public static methods
 
@@ -331,186 +331,186 @@ namespace HtmlAgilityPack
         }
 
         /// <summary>
-		/// Determines if the specified character is considered as a whitespace character.
-		/// </summary>
-		/// <param name="c">The character to check.</param>
-		/// <returns>true if if the specified character is considered as a whitespace character.</returns>
-		public static bool IsWhiteSpace(int c)
-		{
-			if ((c == 10) || (c == 13) || (c == 32) || (c == 9))
-			{
-				return true;
-			}
-			return false;
-		}
+        /// Determines if the specified character is considered as a whitespace character.
+        /// </summary>
+        /// <param name="c">The character to check.</param>
+        /// <returns>true if if the specified character is considered as a whitespace character.</returns>
+        public static bool IsWhiteSpace(int c)
+        {
+            if ((c == 10) || (c == 13) || (c == 32) || (c == 9))
+            {
+                return true;
+            }
+            return false;
+        }
 
-		/// <summary>
-		/// Creates an HTML attribute with the specified name.
-		/// </summary>
-		/// <param name="name">The name of the attribute. May not be null.</param>
-		/// <returns>The new HTML attribute.</returns>
-		public HtmlAttribute CreateAttribute(string name)
-		{
+        /// <summary>
+        /// Creates an HTML attribute with the specified name.
+        /// </summary>
+        /// <param name="name">The name of the attribute. May not be null.</param>
+        /// <returns>The new HTML attribute.</returns>
+        public HtmlAttribute CreateAttribute(string name)
+        {
             if (name == null)
             {
                 throw new ArgumentNullException("name");
             }
 
             return new HtmlAttribute(this) { Name = name };
-		}
+        }
 
-		/// <summary>
-		/// Creates an HTML attribute with the specified name.
-		/// </summary>
-		/// <param name="name">The name of the attribute. May not be null.</param>
-		/// <param name="value">The value of the attribute.</param>
-		/// <returns>The new HTML attribute.</returns>
-		public HtmlAttribute CreateAttribute(string name, string value)
-		{
-			if (name == null)
-			{
-				throw new ArgumentNullException("name");
-			}
-			HtmlAttribute att = CreateAttribute(name);
-			att.Value = value;
-			return att;
-		}
+        /// <summary>
+        /// Creates an HTML attribute with the specified name.
+        /// </summary>
+        /// <param name="name">The name of the attribute. May not be null.</param>
+        /// <param name="value">The value of the attribute.</param>
+        /// <returns>The new HTML attribute.</returns>
+        public HtmlAttribute CreateAttribute(string name, string value)
+        {
+            if (name == null)
+            {
+                throw new ArgumentNullException("name");
+            }
+            HtmlAttribute att = CreateAttribute(name);
+            att.Value = value;
+            return att;
+        }
 
-		/// <summary>
-		/// Creates an HTML comment node.
-		/// </summary>
-		/// <returns>The new HTML comment node.</returns>
-		public HtmlCommentNode CreateComment()
+        /// <summary>
+        /// Creates an HTML comment node.
+        /// </summary>
+        /// <returns>The new HTML comment node.</returns>
+        public HtmlCommentNode CreateComment()
         {
             return new HtmlCommentNode(this, -1);
-		}
+        }
 
-		/// <summary>
-		/// Creates an HTML comment node with the specified comment text.
-		/// </summary>
-		/// <param name="comment">The comment text. May not be null.</param>
-		/// <returns>The new HTML comment node.</returns>
-		public HtmlCommentNode CreateComment(string comment)
-		{
-			if (comment == null)
-			{
-				throw new ArgumentNullException("comment");
-			}
+        /// <summary>
+        /// Creates an HTML comment node with the specified comment text.
+        /// </summary>
+        /// <param name="comment">The comment text. May not be null.</param>
+        /// <returns>The new HTML comment node.</returns>
+        public HtmlCommentNode CreateComment(string comment)
+        {
+            if (comment == null)
+            {
+                throw new ArgumentNullException("comment");
+            }
 
-			return new HtmlCommentNode(this, -1) { Comment = comment };
-		}
+            return new HtmlCommentNode(this, -1) { Comment = comment };
+        }
 
-		/// <summary>
-		/// Creates an HTML element node with the specified name.
-		/// </summary>
-		/// <param name="name">The qualified name of the element. May not be null.</param>
-		/// <returns>The new HTML node.</returns>
-		public HtmlNode CreateElement(string name)
-		{
-			if (name == null)
-			{
-				throw new ArgumentNullException("name");
-			}
+        /// <summary>
+        /// Creates an HTML element node with the specified name.
+        /// </summary>
+        /// <param name="name">The qualified name of the element. May not be null.</param>
+        /// <returns>The new HTML node.</returns>
+        public HtmlNode CreateElement(string name)
+        {
+            if (name == null)
+            {
+                throw new ArgumentNullException("name");
+            }
 
             return new HtmlNode(HtmlNodeType.Element, this, -1) { Name = name };
-		}
+        }
 
-		/// <summary>
-		/// Creates an HTML text node.
-		/// </summary>
-		/// <returns>The new HTML text node.</returns>
-		public HtmlTextNode CreateTextNode()
-		{
+        /// <summary>
+        /// Creates an HTML text node.
+        /// </summary>
+        /// <returns>The new HTML text node.</returns>
+        public HtmlTextNode CreateTextNode()
+        {
             return new HtmlTextNode(this, -1);
-		}
+        }
 
-		/// <summary>
-		/// Creates an HTML text node with the specified text.
-		/// </summary>
-		/// <param name="text">The text of the node. May not be null.</param>
-		/// <returns>The new HTML text node.</returns>
-		public HtmlTextNode CreateTextNode(string text)
-		{
-			if (text == null)
-			{
-				throw new ArgumentNullException("text");
-			}
-			HtmlTextNode t = CreateTextNode();
-			t.Text = text;
-			return t;
-		}
+        /// <summary>
+        /// Creates an HTML text node with the specified text.
+        /// </summary>
+        /// <param name="text">The text of the node. May not be null.</param>
+        /// <returns>The new HTML text node.</returns>
+        public HtmlTextNode CreateTextNode(string text)
+        {
+            if (text == null)
+            {
+                throw new ArgumentNullException("text");
+            }
+            HtmlTextNode t = CreateTextNode();
+            t.Text = text;
+            return t;
+        }
 
-		/// <summary>
-		/// Gets the HTML node with the specified 'id' attribute value.
-		/// </summary>
-		/// <param name="id">The attribute id to match. May not be null.</param>
-		/// <returns>The HTML node with the matching id or null if not found.</returns>
-		public HtmlNode GetElementById(string id)
-		{
-			if (id == null)
-			{
-				throw new ArgumentNullException("id");
-			}
+        /// <summary>
+        /// Gets the HTML node with the specified 'id' attribute value.
+        /// </summary>
+        /// <param name="id">The attribute id to match. May not be null.</param>
+        /// <returns>The HTML node with the matching id or null if not found.</returns>
+        public HtmlNode GetElementById(string id)
+        {
+            if (id == null)
+            {
+                throw new ArgumentNullException("id");
+            }
 
-			if (Nodesid == null)
-			{
-				throw new Exception(HtmlExceptionUseIdAttributeFalse);
-			}
+            if (Nodesid == null)
+            {
+                throw new Exception(HtmlExceptionUseIdAttributeFalse);
+            }
 
-			return Nodesid.GetValueOrNull(id.ToLower());
-		}
+            return Nodesid.GetValueOrNull(id.ToLower());
+        }
 
         /// <summary>
         /// Gets all HTML nodes with the specified tag name.
         /// </summary>
         /// <param name="name">The element name to match. May not be null.</param>
         /// <returns>HTML nodes with matching tag name.</returns>
-		public IEnumerable<HtmlNode> GetElementsByName(string name)
-		{
+        public IEnumerable<HtmlNode> GetElementsByName(string name)
+        {
             if (name == null)
-			{
+            {
                 throw new ArgumentNullException("name");
-			}
+            }
 
             return _documentnode.Descendants(name);
-		}
+        }
 
-		#endregion
+        #endregion
 
         #region Internal Methods
 
-		internal Encoding GetOutEncoding()
-		{
-			// when unspecified, use the stream encoding first
+        internal Encoding GetOutEncoding()
+        {
+            // when unspecified, use the stream encoding first
             return _declaredencoding ?? (_streamencoding ?? HtmlDocumentOptions.DefaultStreamEncoding);
-		}
+        }
 
-		internal HtmlNode GetXmlDeclaration()
-		{
-			if (!_documentnode.HasChildNodes)
-				return null;
+        internal HtmlNode GetXmlDeclaration()
+        {
+            if (!_documentnode.HasChildNodes)
+                return null;
 
-			foreach (HtmlNode node in _documentnode._childnodes)
-				if (node.Name == "?xml") // it's ok, names are case sensitive
-					return node;
+            foreach (HtmlNode node in _documentnode._childnodes)
+                if (node.Name == "?xml") // it's ok, names are case sensitive
+                    return node;
 
-			return null;
-		}
+            return null;
+        }
 
-		internal void SetIdForNode(HtmlNode node, string id)
-		{
+        internal void SetIdForNode(HtmlNode node, string id)
+        {
             if (!Options.UseIdAttribute)
-				return;
+                return;
 
-			if ((Nodesid == null) || (id == null))
-				return;
+            if ((Nodesid == null) || (id == null))
+                return;
 
-			if (node == null)
-				Nodesid.Remove(id.ToLower());
-			else
-				Nodesid[id.ToLower()] = node;
-		}
+            if (node == null)
+                Nodesid.Remove(id.ToLower());
+            else
+                Nodesid[id.ToLower()] = node;
+        }
 
-		#endregion
-	}
+        #endregion
+    }
 }
