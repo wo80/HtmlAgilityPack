@@ -45,6 +45,8 @@ namespace HtmlAgilityPack
             _entityName = new Dictionary<int, string>(250);
             _entityValue = new Dictionary<string, int>(250);
 
+            // Character entity references for ISO 8859-1 characters
+
             _entityValue.Add("nbsp", 160);
             _entityValue.Add("iexcl", 161);
             _entityValue.Add("cent", 162);
@@ -141,6 +143,10 @@ namespace HtmlAgilityPack
             _entityValue.Add("yacute", 253);
             _entityValue.Add("thorn", 254);
             _entityValue.Add("yuml", 255);
+
+            // Character entity references for symbols, mathematical
+            // symbols, and Greek letters
+
             _entityValue.Add("fnof", 402);
             _entityValue.Add("Alpha", 913);
             _entityValue.Add("Beta", 914);
@@ -265,6 +271,10 @@ namespace HtmlAgilityPack
             _entityValue.Add("clubs", 9827);
             _entityValue.Add("hearts", 9829);
             _entityValue.Add("diams", 9830);
+
+            // Character entity references for markup-significant and
+            // internationalization characters
+
             _entityValue.Add("quot", 34);
             _entityValue.Add("amp", 38);
             _entityValue.Add("lt", 60);
@@ -331,8 +341,8 @@ namespace HtmlAgilityPack
                 return text;
             }
 
-            StringBuilder sb = new StringBuilder(text.Length);
-            StringBuilder entity = new StringBuilder(10);
+            var sb = new StringBuilder(text.Length);
+            var entity = new StringBuilder(10);
 
             ParseState state = ParseState.Text;
 
@@ -439,6 +449,7 @@ namespace HtmlAgilityPack
             {
                 sb.Append("&" + entity);
             }
+
             return sb.ToString();
         }
 
@@ -453,21 +464,23 @@ namespace HtmlAgilityPack
             {
                 throw new ArgumentNullException("node");
             }
+
             HtmlNode result = node.CloneNode(true);
+
             if (result.HasAttributes)
+            {
                 Entitize(result.Attributes);
+            }
 
             if (result.HasChildNodes)
             {
                 Entitize(result.ChildNodes);
             }
-            else
+            else if (result.NodeType == HtmlNodeType.Text)
             {
-                if (result.NodeType == HtmlNodeType.Text)
-                {
-                    ((HtmlTextNode)result).Text = Entitize(((HtmlTextNode)result).Text, true, true);
-                }
+                ((HtmlTextNode)result).Text = Entitize(((HtmlTextNode)result).Text, true, true);
             }
+
             return result;
         }
 
@@ -570,29 +583,28 @@ namespace HtmlAgilityPack
 
         private static void Entitize(HtmlAttributeCollection collection)
         {
-            foreach (HtmlAttribute at in collection)
+            foreach (var attribute in collection)
             {
-                at.Value = Entitize(at.Value);
+                attribute.Value = Entitize(attribute.Value);
             }
         }
 
         private static void Entitize(HtmlNodeCollection collection)
         {
-            foreach (HtmlNode node in collection)
+            foreach (var node in collection)
             {
                 if (node.HasAttributes)
+                {
                     Entitize(node.Attributes);
+                }
 
                 if (node.HasChildNodes)
                 {
                     Entitize(node.ChildNodes);
                 }
-                else
+                else if (node.NodeType == HtmlNodeType.Text)
                 {
-                    if (node.NodeType == HtmlNodeType.Text)
-                    {
-                        ((HtmlTextNode)node).Text = Entitize(((HtmlTextNode)node).Text, true, true);
-                    }
+                    ((HtmlTextNode)node).Text = Entitize(((HtmlTextNode)node).Text, true, true);
                 }
             }
         }

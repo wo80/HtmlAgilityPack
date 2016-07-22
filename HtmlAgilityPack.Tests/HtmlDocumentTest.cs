@@ -22,6 +22,13 @@ namespace HtmlAgilityPack.Tests
         }
 
         [Test]
+        public void Test_1()
+        {
+            var doc = HtmlDocument.Parse("<html><head><title>Hello</title></head><body><p id=\"hello\">Hello</p></body></html>");
+            Assert.AreEqual(1, 1);
+        }
+
+        [Test]
         public void DeclaredEncoding_1()
         {
             Assert.AreEqual("utf-8", _doc1.DeclaredEncoding.WebName);
