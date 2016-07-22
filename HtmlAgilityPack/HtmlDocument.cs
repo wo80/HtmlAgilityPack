@@ -26,7 +26,7 @@ namespace HtmlAgilityPack
 
         internal Dictionary<string, HtmlNode> Nodesid;
 
-        private List<HtmlParseError> _parseerrors = new List<HtmlParseError>();
+        private List<HtmlParseError> _parseerrors;
 
         private string _remainder;
         private int _remainderOffset;
@@ -143,45 +143,11 @@ namespace HtmlAgilityPack
         /// Loads an HTML document from a stream.
         /// </summary>
         /// <param name="stream">The input stream.</param>
-        /// <param name="detectEncodingFromByteOrderMarks">Indicates whether to look for byte order marks at the beginning of the stream.</param>
-        public static HtmlDocument Load(Stream stream, bool detectEncodingFromByteOrderMarks)
-        {
-            return Load(new StreamReader(stream, detectEncodingFromByteOrderMarks));
-        }
-
-        /// <summary>
-        /// Loads an HTML document from a stream.
-        /// </summary>
-        /// <param name="stream">The input stream.</param>
         /// <param name="encoding">The character encoding to use.</param>
         public static HtmlDocument Load(Stream stream, Encoding encoding)
         {
             return Load(new StreamReader(stream, encoding));
         }
-
-        /// <summary>
-        /// Loads an HTML document from a stream.
-        /// </summary>
-        /// <param name="stream">The input stream.</param>
-        /// <param name="encoding">The character encoding to use.</param>
-        /// <param name="detectEncodingFromByteOrderMarks">Indicates whether to look for byte order marks at the beginning of the stream.</param>
-        public static HtmlDocument Load(Stream stream, Encoding encoding, bool detectEncodingFromByteOrderMarks)
-        {
-            return Load(new StreamReader(stream, encoding, detectEncodingFromByteOrderMarks));
-        }
-
-        /// <summary>
-        /// Loads an HTML document from a stream.
-        /// </summary>
-        /// <param name="stream">The input stream.</param>
-        /// <param name="encoding">The character encoding to use.</param>
-        /// <param name="detectEncodingFromByteOrderMarks">Indicates whether to look for byte order marks at the beginning of the stream.</param>
-        /// <param name="buffersize">The minimum buffer size.</param>
-        public static HtmlDocument Load(Stream stream, Encoding encoding, bool detectEncodingFromByteOrderMarks, int buffersize)
-        {
-            return Load(new StreamReader(stream, encoding, detectEncodingFromByteOrderMarks, buffersize));
-        }
-
 
         /// <summary>
         /// Loads the HTML document from the specified TextReader.
@@ -235,6 +201,7 @@ namespace HtmlAgilityPack
 
             doc._documentnode = parser.Parse(reader.ReadToEnd());
             doc._declaredencoding = parser._declaredencoding;
+            doc._parseerrors = parser._parseerrors;
 
             if (doc.Options.CheckSyntax)
             {

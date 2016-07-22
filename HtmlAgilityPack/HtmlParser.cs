@@ -30,14 +30,13 @@ namespace HtmlAgilityPack
         private HtmlAttribute _currentattribute;
 
         internal Encoding _declaredencoding;
-        private Encoding _streamencoding;
 
         internal string Text;
 
         internal Dictionary<string, HtmlNode> Lastnodes = new Dictionary<string, HtmlNode>();
         internal Dictionary<int, HtmlNode> Openednodes;
 
-        private List<HtmlParseError> _parseerrors = new List<HtmlParseError>();
+        internal List<HtmlParseError> _parseerrors = new List<HtmlParseError>();
 
         HtmlDocument _document;
 
@@ -1114,12 +1113,14 @@ namespace HtmlAgilityPack
                 throw new EncodingFoundException(_declaredencoding);
             }
 
-            if (_streamencoding != null && _declaredencoding != null)
+            var streamEncoding = _document.StreamEncoding;
+
+            if (streamEncoding != null && _declaredencoding != null)
             {
 #if SILVERLIGHT || PocketPC || METRO
                 if (_declaredencoding.WebName != _streamencoding.WebName)
 #else
-                if (_declaredencoding.WindowsCodePage != _streamencoding.WindowsCodePage)
+                if (_declaredencoding.WindowsCodePage != streamEncoding.WindowsCodePage)
 #endif
                 {
                     AddError(
@@ -1127,7 +1128,7 @@ namespace HtmlAgilityPack
                         _line, _lineposition,
                         _index, //node.OuterHtml,
                         "Encoding mismatch between StreamEncoding: " +
-                        _streamencoding.WebName + " and DeclaredEncoding: " +
+                        streamEncoding.WebName + " and DeclaredEncoding: " +
                         _declaredencoding.WebName);
                 }
             }
