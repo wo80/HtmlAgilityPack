@@ -24,6 +24,6 @@ namespace HtmlAgilityPack
         /// <summary>
         /// A text node is always the child of an element or a document node.
         /// </summary>
-        Text,
+        Text
     }
 }

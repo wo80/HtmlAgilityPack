@@ -6,21 +6,12 @@ namespace HtmlAgilityPack
     /// </summary>
     public class HtmlCommentNode : HtmlNode
     {
-        #region Fields
-
         private string _comment;
 
-        #endregion
-
-        #region Constructors
-
         internal HtmlCommentNode(HtmlDocument ownerdocument, int index)
-            :
-                base(HtmlNodeType.Comment, ownerdocument, index)
+            : base(HtmlNodeType.Comment, ownerdocument, index)
         {
         }
-
-        #endregion
 
         #region Properties
 
