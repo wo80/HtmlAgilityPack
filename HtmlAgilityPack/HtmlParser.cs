@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Text;
-using System.Text.RegularExpressions;
-using System.Xml;
 
 namespace HtmlAgilityPack
 {
@@ -12,6 +9,41 @@ namespace HtmlAgilityPack
     /// </summary>
     public class HtmlParser
     {
+        #region Resetters (nested tags)
+
+        private static readonly string[] ResetterLi = new string[]
+        {
+            "ul",
+            "ol"
+        };
+
+        private static readonly string[] ResetterOption = new string[]
+        {
+            "select"
+        };
+
+        private static readonly string[] ResetterTr = new string[]
+        {
+            "table",
+        };
+
+        private static readonly string[] ResetterP = new string[]
+        {
+            "div",
+            "header",
+            "footer",
+            "article",
+            "section"
+        };
+
+        private static readonly string[] ResetterThTd = new string[]
+        {
+            "tr",
+            "table",
+        };
+
+        #endregion
+
         private int _c;
         private int _index;
 
@@ -777,24 +809,37 @@ namespace HtmlAgilityPack
         private bool FindResetterNodes(HtmlNode node, string[] names)
         {
             if (names == null)
+            {
                 return false;
+            }
 
             for (int i = 0; i < names.Length; i++)
             {
                 if (FindResetterNode(node, names[i]) != null)
+                {
                     return true;
+                }
             }
+
             return false;
         }
 
         private void FixNestedTag(string name, string[] resetters)
         {
             if (resetters == null)
+            {
                 return;
+            }
 
             HtmlNode prev = Lastnodes.GetValueOrNull(_currentnode.Name);
-            // if we find a previous unclosed same name node, without a resetter node between, we must close it
-            if (prev == null || (Lastnodes[name].Closed)) return;
+
+            // if we find a previous unclosed same name node, without a resetter
+            // node between, we must close it
+            if (prev == null || (Lastnodes[name].Closed))
+            {
+                return;
+            }
+
             // try to find a resetter node, if found, we do nothing
             if (FindResetterNodes(prev, resetters))
             {
@@ -812,7 +857,9 @@ namespace HtmlAgilityPack
         {
             // we are only interested by start tags, not closing tags
             if (!_currentnode._starttag)
+            {
                 return;
+            }
 
             string name = CurrentNodeName();
             FixNestedTag(name, GetResetters(name));
@@ -823,14 +870,20 @@ namespace HtmlAgilityPack
             switch (name)
             {
                 case "li":
-                    return new string[] { "ul" };
+                    return ResetterLi;
+
+                case "option":
+                    return ResetterOption;
 
                 case "tr":
-                    return new string[] { "table" };
+                    return ResetterTr;
+
+                case "p":
+                    return ResetterP;
 
                 case "th":
                 case "td":
-                    return new string[] { "tr", "table" };
+                    return ResetterThTd;
 
                 default:
                     return null;
