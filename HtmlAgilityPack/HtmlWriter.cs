@@ -286,9 +286,9 @@ namespace HtmlAgilityPack
                 return;
             }
             // we use Hashitems to make sure attributes are written only once
-            foreach (HtmlAttribute att in node.Attributes.Hashitems.Values)
+            foreach (HtmlAttribute att in node.Attributes._names.Values)
             {
-                writer.WriteAttributeString(att.XmlName, att.Value);
+                writer.WriteAttributeString(GetXmlName(att.Name), att.Value);
             }
         }
 
@@ -298,11 +298,11 @@ namespace HtmlAgilityPack
             string quote = att.QuoteType == AttributeValueQuote.DoubleQuote ? "\"" : "'";
             if (_document.Options.OutputAsXml)
             {
-                name = _document.Options.OutputUpperCase ? att.XmlName.ToUpper() : att.XmlName;
+                name = _document.Options.OutputUpperCase ? GetXmlName(att.Name).ToUpper() : GetXmlName(att.Name);
                 if (_document.Options.OutputOriginalCase)
                     name = att.OriginalName;
 
-                writer.Write(" " + name + "=" + quote + HtmlEncode(att.XmlValue) + quote);
+                writer.Write(" " + name + "=" + quote + HtmlEncode(att.Value) + quote);
             }
             else
             {
@@ -340,7 +340,7 @@ namespace HtmlAgilityPack
             if (_document.Options.OutputAsXml)
             {
                 // we use Hashitems to make sure attributes are written only once
-                foreach (HtmlAttribute att in attributes.Hashitems.Values)
+                foreach (HtmlAttribute att in attributes._names.Values)
                 {
                     WriteAttribute(writer, att);
                 }

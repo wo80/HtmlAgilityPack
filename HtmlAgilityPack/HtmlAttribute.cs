@@ -14,33 +14,33 @@ namespace HtmlAgilityPack
     /// Represents an HTML attribute.
     /// </summary>
     [DebuggerDisplay("Name: {OriginalName}, Value: {Value}")]
-    public class HtmlAttribute : IComparable
+    public class HtmlAttribute : IComparable<HtmlAttribute>
     {
         #region Fields
 
-        private int _line;
+        internal int _line;
         internal int _lineposition;
+
         internal string _name;
         internal int _namelength;
         internal int _namestartindex;
-        internal HtmlDocument _ownerdocument; // attribute can exists without a node
-        internal HtmlNode _ownernode;
-        private AttributeValueQuote _quoteType = AttributeValueQuote.DoubleQuote;
-        internal int _streamposition;
+
         internal string _value;
         internal int _valuelength;
         internal int _valuestartindex;
+        
+        // TODO: why can attributes exist without a node?
+
+        internal HtmlDocument _ownerdocument; // attribute can exists without a node
+        internal HtmlNode _ownernode;
+        private AttributeValueQuote _quoteType = AttributeValueQuote.DoubleQuote;
 
         #endregion
-
-        #region Constructors
 
         internal HtmlAttribute(HtmlDocument ownerdocument)
         {
             _ownerdocument = ownerdocument;
         }
-
-        #endregion
 
         #region Properties
 
@@ -50,7 +50,6 @@ namespace HtmlAgilityPack
         public int Line
         {
             get { return _line; }
-            internal set { _line = value; }
         }
 
         /// <summary>
@@ -123,14 +122,6 @@ namespace HtmlAgilityPack
         }
 
         /// <summary>
-        /// Gets the stream position of this attribute in the document, relative to the start of the document.
-        /// </summary>
-        public int StreamPosition
-        {
-            get { return _streamposition; }
-        }
-
-        /// <summary>
         /// Gets or sets the value of the attribute.
         /// </summary>
         public string Value
@@ -154,16 +145,6 @@ namespace HtmlAgilityPack
             }
         }
 
-        internal string XmlName
-        {
-            get { return HtmlWriter.GetXmlName(Name); }
-        }
-
-        internal string XmlValue
-        {
-            get { return Value; }
-        }
-
         /// <summary>
         /// Gets a valid XPath string that points to this Attribute
         /// </summary>
@@ -183,16 +164,16 @@ namespace HtmlAgilityPack
         /// <summary>
         /// Compares the current instance with another attribute. Comparison is based on attributes' name.
         /// </summary>
-        /// <param name="obj">An attribute to compare with this instance.</param>
+        /// <param name="other">An attribute to compare with this instance.</param>
         /// <returns>A 32-bit signed integer that indicates the relative order of the names comparison.</returns>
-        public int CompareTo(object obj)
+        public int CompareTo(HtmlAttribute other)
         {
-            HtmlAttribute att = obj as HtmlAttribute;
-            if (att == null)
+            if (other == null)
             {
-                throw new ArgumentException("obj");
+                throw new ArgumentNullException("other");
             }
-            return Name.CompareTo(att.Name);
+
+            return Name.CompareTo(other.Name);
         }
 
         #endregion
@@ -205,10 +186,11 @@ namespace HtmlAgilityPack
         /// <returns>The cloned attribute.</returns>
         public HtmlAttribute Clone()
         {
-            HtmlAttribute att = new HtmlAttribute(_ownerdocument);
-            att.Name = Name;
-            att.Value = Value;
-            return att;
+            return new HtmlAttribute(_ownerdocument)
+            {
+                Name = this.Name,
+                Value = this.Value
+            };
         }
 
         /// <summary>
@@ -242,20 +224,5 @@ namespace HtmlAgilityPack
         }
 
         #endregion
-    }
-
-    /// <summary>
-    /// An Enum representing different types of Quotes used for surrounding attribute values
-    /// </summary>
-    public enum AttributeValueQuote
-    {
-        /// <summary>
-        /// A single quote mark '
-        /// </summary>
-        SingleQuote,
-        /// <summary>
-        /// A double quote mark "
-        /// </summary>
-        DoubleQuote
     }
 }

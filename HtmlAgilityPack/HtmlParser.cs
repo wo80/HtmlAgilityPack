@@ -982,9 +982,8 @@ namespace HtmlAgilityPack
         {
             _currentattribute = CreateAttribute();
             _currentattribute._namestartindex = index;
-            _currentattribute.Line = _line;
+            _currentattribute._line = _line;
             _currentattribute._lineposition = _lineposition;
-            _currentattribute._streamposition = index;
         }
 
         private void PushAttributeValueEnd(int index)
