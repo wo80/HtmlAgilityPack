@@ -880,7 +880,7 @@ namespace HtmlAgilityPack
                 throw new ArgumentNullException("node");
             }
 
-            Attributes.RemoveAll();
+            Attributes.Clear();
             if (node.HasAttributes)
             {
                 foreach (HtmlAttribute att in node.Attributes)

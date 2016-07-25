@@ -1,20 +1,19 @@
 // HtmlAgilityPack V1.0 - Simon Mourier <simon underscore mourier at hotmail dot com>
-using System;
-using System.Collections;
-using System.Collections.Generic;
 
 namespace HtmlAgilityPack
 {
+    using System;
+    using System.Collections;
+    using System.Collections.Generic;
+
     /// <summary>
     /// Represents a combined list and collection of HTML nodes.
     /// </summary>
-    public class HtmlAttributeCollection : IList<HtmlAttribute>
+    public class HtmlAttributeCollection : IEnumerable<HtmlAttribute>
     {
         private HtmlNode _ownernode;
         private List<HtmlAttribute> _items;
         internal Dictionary<string, HtmlAttribute> _names;
-
-        // TODO: why allow multiple attributes with same name?
 
         internal HtmlAttributeCollection(HtmlNode ownernode)
         {
@@ -40,12 +39,23 @@ namespace HtmlAgilityPack
                 HtmlAttribute value;
                 return _names.TryGetValue(name.ToLower(), out value) ? value : null;
             }
-            set { Append(value); }
+            set
+            {
+                Append(value);
+            }
+        }
+
+        /// <summary>
+        /// Gets the attribute at the specified index.
+        /// </summary>
+        public HtmlAttribute this[int index]
+        {
+            get { return _items[index]; }
         }
 
         #endregion
 
-        #region IList<HtmlAttribute> Members
+        #region Public Methods
 
         /// <summary>
         /// Gets the number of elements actually contained in the list.
@@ -56,151 +66,72 @@ namespace HtmlAgilityPack
         }
 
         /// <summary>
-        /// Gets readonly status of colelction
+        /// Checks for existance of attribute with given name
         /// </summary>
-        public bool IsReadOnly
-        {
-            get { return false; }
-        }
-
-        /// <summary>
-        /// Gets the attribute at the specified index.
-        /// </summary>
-        public HtmlAttribute this[int index]
-        {
-            get { return _items[index]; }
-            set { _items[index] = value; }
-        }
-
-        /// <summary>
-        /// Adds supplied item to collection
-        /// </summary>
-        /// <param name="item"></param>
-        public void Add(HtmlAttribute item)
-        {
-            Append(item);
-        }
-
-        /// <summary>
-        /// Explicit clear
-        /// </summary>
-        void ICollection<HtmlAttribute>.Clear()
-        {
-            _items.Clear();
-        }
-
-        /// <summary>
-        /// Retreives existence of supplied item
-        /// </summary>
-        /// <param name="item"></param>
+        /// <param name="name"></param>
         /// <returns></returns>
-        public bool Contains(HtmlAttribute item)
+        public bool Contains(string name)
         {
-            return _items.Contains(item);
+            return _names.ContainsKey(name.ToLower());
         }
 
         /// <summary>
-        /// Copies collection to array
+        /// Retrieves the index for the given attribute name.
         /// </summary>
-        /// <param name="array"></param>
-        /// <param name="arrayIndex"></param>
-        public void CopyTo(HtmlAttribute[] array, int arrayIndex)
+        /// <param name="name"></param>
+        /// <returns>Index of attribute or -1 if not found.</returns>
+        public int IndexOf(string name)
         {
-            _items.CopyTo(array, arrayIndex);
+            if (name == null)
+            {
+                throw new ArgumentNullException("name");
+            }
+
+            name = name.ToLower();
+
+            for (int i = 0; i < _items.Count; i++)
+            {
+                if (_items[i].Name == name)
+                {
+                    return i;
+                }
+            }
+
+            return -1;
         }
 
         /// <summary>
-        /// Get Explicit enumerator
+        /// Inserts the specified attribute as the last attribute in the collection.
         /// </summary>
-        /// <returns></returns>
-        IEnumerator<HtmlAttribute> IEnumerable<HtmlAttribute>.GetEnumerator()
-        {
-            return _items.GetEnumerator();
-        }
-
-        /// <summary>
-        /// Explicit non-generic enumerator
-        /// </summary>
-        /// <returns></returns>
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return _items.GetEnumerator();
-        }
-
-        /// <summary>
-        /// Retrieves the index for the supplied item, -1 if not found
-        /// </summary>
-        /// <param name="item"></param>
-        /// <returns></returns>
-        public int IndexOf(HtmlAttribute item)
-        {
-            return _items.IndexOf(item);
-        }
-
-        /// <summary>
-        /// Inserts given item into collection at supplied index
-        /// </summary>
-        /// <param name="index"></param>
-        /// <param name="item"></param>
-        public void Insert(int index, HtmlAttribute item)
+        /// <param name="item">The attribute to insert. May not be null.</param>
+        /// <returns>The appended attribute.</returns>
+        public HtmlAttribute Append(HtmlAttribute item)
         {
             if (item == null)
             {
                 throw new ArgumentNullException("item");
             }
 
-            _names[item.Name] = item;
-            item._ownernode = _ownernode;
-            _items.Insert(index, item);
-
             _ownernode.SetChanged();
-        }
 
-        /// <summary>
-        /// Explicit collection remove
-        /// </summary>
-        /// <param name="item"></param>
-        /// <returns></returns>
-        bool ICollection<HtmlAttribute>.Remove(HtmlAttribute item)
-        {
-            return _items.Remove(item);
-        }
+            HtmlAttribute attribute;
 
-        /// <summary>
-        /// Removes the attribute at the specified index.
-        /// </summary>
-        /// <param name="index">The index of the attribute to remove.</param>
-        public void RemoveAt(int index)
-        {
-            HtmlAttribute att = _items[index];
-            _names.Remove(att.Name);
-            _items.RemoveAt(index);
-
-            _ownernode.SetChanged();
-        }
-
-        #endregion
-
-        #region Public Methods
-
-        /// <summary>
-        /// Inserts the specified attribute as the last attribute in the collection.
-        /// </summary>
-        /// <param name="newAttribute">The attribute to insert. May not be null.</param>
-        /// <returns>The appended attribute.</returns>
-        public HtmlAttribute Append(HtmlAttribute newAttribute)
-        {
-            if (newAttribute == null)
+            if (_names.TryGetValue(item.Name, out attribute))
             {
-                throw new ArgumentNullException("newAttribute");
+                // Update attribute value;
+                attribute.Value = item.Value;
+
+                // Return existing attribute.
+                return attribute;
             }
 
-            _names[newAttribute.Name] = newAttribute;
-            newAttribute._ownernode = _ownernode;
-            _items.Add(newAttribute);
+            item._ownernode = _ownernode;
 
-            _ownernode.SetChanged();
-            return newAttribute;
+            // Add new attibute to collection.
+            _items.Add(item);
+            _names.Add(item.Name, item);
+
+            return item;
         }
 
         /// <summary>
@@ -210,8 +141,7 @@ namespace HtmlAgilityPack
         /// <returns>The appended attribute.</returns>
         public HtmlAttribute Append(string name)
         {
-            HtmlAttribute att = _ownernode._ownerdocument.CreateAttribute(name);
-            return Append(att);
+            return Append(_ownernode._ownerdocument.CreateAttribute(name));
         }
 
         /// <summary>
@@ -222,52 +152,21 @@ namespace HtmlAgilityPack
         /// <returns>The appended attribute.</returns>
         public HtmlAttribute Append(string name, string value)
         {
-            HtmlAttribute att = _ownernode._ownerdocument.CreateAttribute(name, value);
-            return Append(att);
-        }
-
-        /// <summary>
-        /// Checks for existance of attribute with given name
-        /// </summary>
-        /// <param name="name"></param>
-        /// <returns></returns>
-        public bool Contains(string name)
-        {
-            for (int i = 0; i < _items.Count; i++)
-            {
-                if (_items[i].Name.Equals(name.ToLower()))
-                    return true;
-            }
-            return false;
-        }
-
-        /// <summary>
-        /// Inserts the specified attribute as the first node in the collection.
-        /// </summary>
-        /// <param name="newAttribute">The attribute to insert. May not be null.</param>
-        /// <returns>The prepended attribute.</returns>
-        public HtmlAttribute Prepend(HtmlAttribute newAttribute)
-        {
-            Insert(0, newAttribute);
-            return newAttribute;
+            return Append(_ownernode._ownerdocument.CreateAttribute(name, value));
         }
 
         /// <summary>
         /// Removes a given attribute from the list.
         /// </summary>
-        /// <param name="attribute">The attribute to remove. May not be null.</param>
-        public void Remove(HtmlAttribute attribute)
+        /// <param name="item">The attribute to remove. May not be null.</param>
+        public void Remove(HtmlAttribute item)
         {
-            if (attribute == null)
+            if (item == null)
             {
-                throw new ArgumentNullException("attribute");
+                throw new ArgumentNullException("item");
             }
-            int index = GetAttributeIndex(attribute);
-            if (index == -1)
-            {
-                throw new IndexOutOfRangeException();
-            }
-            RemoveAt(index);
+
+            Remove(item.Name);
         }
 
         /// <summary>
@@ -281,31 +180,27 @@ namespace HtmlAgilityPack
                 throw new ArgumentNullException("name");
             }
 
-            string lname = name.ToLower();
-            for (int i = 0; i < _items.Count; i++)
+            name = name.ToLower();
+            
+            HtmlAttribute attribute;
+
+            if (_names.TryGetValue(name, out attribute))
             {
-                HtmlAttribute att = _items[i];
-                if (att.Name == lname)
-                {
-                    RemoveAt(i);
-                }
+                _names.Remove(name);
+                _items.Remove(attribute);
             }
         }
 
         /// <summary>
-        /// Remove all attributes in the list.
+        /// Removes all attributes from the collection.
         /// </summary>
-        public void RemoveAll()
+        public void Clear()
         {
             _names.Clear();
             _items.Clear();
 
             _ownernode.SetChanged();
         }
-
-        #endregion
-
-        #region LINQ Methods
 
         /// <summary>
         /// Returns all attributes with specified name. Handles case insentivity
@@ -318,48 +213,30 @@ namespace HtmlAgilityPack
             for (int i = 0; i < _items.Count; i++)
             {
                 if (_items[i].Name.Equals(name))
+                {
                     yield return _items[i];
+                }
             }
+        }
+
+        #endregion
+
+        /// <summary>
+        /// Get list enumerator.
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerator<HtmlAttribute> GetEnumerator()
+        {
+            return _items.GetEnumerator();
         }
 
         /// <summary>
-        /// Removes all attributes from the collection.
+        /// Get explicit non-generic list enumerator.
         /// </summary>
-        public void Clear()
+        /// <returns></returns>
+        IEnumerator IEnumerable.GetEnumerator()
         {
-            _names.Clear();
-            _items.Clear();
+            return _items.GetEnumerator();
         }
-
-        #endregion
-
-        #region Internal Methods
-
-        internal int GetAttributeIndex(HtmlAttribute attribute)
-        {
-            return GetAttributeIndex(attribute.Name);
-        }
-
-        internal int GetAttributeIndex(string name)
-        {
-            if (name == null)
-            {
-                throw new ArgumentNullException("name");
-            }
-
-            string lname = name.ToLower();
-
-            for (int i = 0; i < _items.Count; i++)
-            {
-                if ((_items[i]).Name == lname)
-                {
-                    return i;
-                }
-            }
-
-            return -1;
-        }
-
-        #endregion
     }
 }
