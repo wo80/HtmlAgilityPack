@@ -29,7 +29,7 @@ namespace HtmlAgilityPack
         /// </summary>
         public override string InnerHtml
         {
-            get { return OuterHtml; }
+            get { return _text; }
             set { _text = value; }
         }
 
@@ -40,10 +40,6 @@ namespace HtmlAgilityPack
         {
             get
             {
-                if (_text == null)
-                {
-                    return base.OuterHtml;
-                }
                 return _text;
             }
         }
@@ -53,14 +49,7 @@ namespace HtmlAgilityPack
         /// </summary>
         public string Text
         {
-            get
-            {
-                if (_text == null)
-                {
-                    return base.OuterHtml;
-                }
-                return _text;
-            }
+            get { return _text; }
             set { _text = value; }
         }
 

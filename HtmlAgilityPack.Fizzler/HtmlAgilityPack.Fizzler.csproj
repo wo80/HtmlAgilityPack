@@ -58,14 +58,13 @@
     <Compile Include="Parser\Either.cs" />
     <Compile Include="Selector\IElementOps.cs" />
     <Compile Include="Selector\ISelectorGenerator.cs" />
-    <Compile Include="Parser\Parser.cs" />
+    <Compile Include="Parser\SelectorParser.cs" />
     <Compile Include="Selector\NamespacePrefix.cs" />
     <Compile Include="Parser\Reader.cs" />
-    <Compile Include="Selector\Selector.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Selector\SelectorGenerator.cs" />
     <Compile Include="Parser\Token.cs" />
-    <Compile Include="Parser\Tokener.cs" />
+    <Compile Include="Parser\Tokenizer.cs" />
     <Compile Include="Parser\TokenKind.cs" />
   </ItemGroup>
   <ItemGroup>

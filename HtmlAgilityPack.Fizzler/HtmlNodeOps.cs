@@ -16,6 +16,7 @@ namespace HtmlAgilityPack.Fizzler
     /// </summary>
     public class HtmlNodeOps : IElementOps<HtmlNode>
     {
+        static char[] splitter = new char[] { ' ', '\t', '\r', '\n' };
 
         public virtual Selector<HtmlNode> Type(NamespacePrefix prefix, string type)
         {
@@ -43,7 +44,7 @@ namespace HtmlAgilityPack.Fizzler
         public virtual Selector<HtmlNode> Class(string clazz)
         {
             return nodes => nodes.Elements().Where(n => n.GetAttributeValue("class", string.Empty)
-                                                         .Split(' ')
+                                                         .Split(splitter, StringSplitOptions.RemoveEmptyEntries)
                                                          .Contains(clazz));
         }
 

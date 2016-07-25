@@ -1009,14 +1009,28 @@ namespace HtmlAgilityPack
         {
             _currentnode._outerlength = index - _currentnode._outerstartindex;
 
-            if ((_currentnode._nodetype == HtmlNodeType.Text) ||
-                (_currentnode._nodetype == HtmlNodeType.Comment))
+            if (_currentnode._nodetype == HtmlNodeType.Text)
             {
                 // forget about void nodes
                 if (_currentnode._outerlength > 0)
                 {
                     _currentnode._innerlength = _currentnode._outerlength;
                     _currentnode._innerstartindex = _currentnode._outerstartindex;
+                    ((HtmlTextNode)_currentnode).Text = Text.Substring(_currentnode._innerstartindex, _currentnode._innerlength);
+                    if (_lastparentnode != null)
+                    {
+                        _lastparentnode.AppendChild(_currentnode);
+                    }
+                }
+            }
+            else if (_currentnode._nodetype == HtmlNodeType.Comment)
+            {
+                // forget about void nodes
+                if (_currentnode._outerlength > 0)
+                {
+                    _currentnode._innerlength = _currentnode._outerlength;
+                    _currentnode._innerstartindex = _currentnode._outerstartindex;
+                    ((HtmlCommentNode)_currentnode).Comment = Text.Substring(_currentnode._innerstartindex, _currentnode._innerlength);
                     if (_lastparentnode != null)
                     {
                         _lastparentnode.AppendChild(_currentnode);

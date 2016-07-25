@@ -47,5 +47,31 @@ namespace HtmlAgilityPack.Fizzler.Tests
 			Assert.AreEqual("p", result[0].Name);
 			Assert.AreEqual("eeeee", result[0].InnerText);
 		}
+
+        [Test]
+        public void Class_LineBreak()
+        {
+            var result = SelectList("div.line");
+
+            Assert.AreEqual(1, result.Count);
+
+            result = SelectList("div.break");
+
+            Assert.AreEqual(1, result.Count);
+        }
+
+        [Test]
+        public void Class_Tab()
+        {
+            var result = SelectList("div .tab");
+
+            Assert.AreEqual(1, result.Count);
+
+            result = SelectList("div .character");
+
+            Assert.AreEqual(1, result.Count);
+            Assert.AreEqual("p", result[0].Name);
+            Assert.AreEqual("yeeeah", result[0].InnerText);
+        }
 	}
 }

@@ -5,6 +5,11 @@ namespace HtmlAgilityPack.Fizzler
     using System.Linq;
 
     /// <summary>
+    /// Represents a selector implementation over an arbitrary type of elements.
+    /// </summary>
+    public delegate IEnumerable<TElement> Selector<TElement>(IEnumerable<TElement> elements);
+
+    /// <summary>
     /// A selector generator implementation for an arbitrary document/element system.
     /// </summary>
     public class SelectorGenerator<TElement> : ISelectorGenerator

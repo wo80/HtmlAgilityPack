@@ -312,7 +312,7 @@ namespace HtmlAgilityPack
         {
             get
             {
-                if (_changed)
+                if (_changed || _innerhtml == null)
                 {
                     UpdateHtml();
                     return _innerhtml;
@@ -447,7 +447,7 @@ namespace HtmlAgilityPack
         {
             get
             {
-                if (_changed)
+                if (_changed || _outerhtml == null)
                 {
                     UpdateHtml();
                     return _outerhtml;

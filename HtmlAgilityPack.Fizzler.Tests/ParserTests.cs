@@ -310,7 +310,7 @@ namespace HtmlAgilityPack.Fizzler.Tests
             IEnumerable<object> expectations)
         {
             var generator = new TestSelectorGenerator();
-            Parser.Parse(Tokener.Tokenize(input), generator);
+            SelectorParser.Parse(Tokenizer.Tokenize(input), generator);
             using (var actual = actuals.GetEnumerator())
             using (var expected = expectations.GetEnumerator())
             {

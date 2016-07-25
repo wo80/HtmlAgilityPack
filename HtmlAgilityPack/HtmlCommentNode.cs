@@ -20,14 +20,7 @@ namespace HtmlAgilityPack
         /// </summary>
         public string Comment
         {
-            get
-            {
-                if (_comment == null)
-                {
-                    return base.InnerHtml;
-                }
-                return _comment;
-            }
+            get { return _comment; }
             set { _comment = value; }
         }
 
@@ -36,14 +29,7 @@ namespace HtmlAgilityPack
         /// </summary>
         public override string InnerHtml
         {
-            get
-            {
-                if (_comment == null)
-                {
-                    return base.InnerHtml;
-                }
-                return _comment;
-            }
+            get { return _comment; }
             set { _comment = value; }
         }
 
@@ -54,10 +40,6 @@ namespace HtmlAgilityPack
         {
             get
             {
-                if (_comment == null)
-                {
-                    return base.OuterHtml;
-                }
                 return "<!--" + _comment + "-->";
             }
         }
