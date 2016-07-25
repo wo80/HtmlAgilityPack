@@ -9,7 +9,7 @@
     /// <summary>
     /// Lexer for tokens in CSS selector grammar.
     /// </summary>
-    public static class Tokener
+    public static class Tokenizer
     {
         /// <summary>
         /// Parses tokens from a given text source.

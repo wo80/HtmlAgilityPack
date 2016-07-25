@@ -77,7 +77,7 @@
         /// </remarks>
         public static Func<HtmlNode, IEnumerable<HtmlNode>> Compile(string selector)
         {
-            var compiled = Parser.Parse(selector, new SelectorGenerator<HtmlNode>(_ops)).Selector;
+            var compiled = SelectorParser.Parse(selector, new SelectorGenerator<HtmlNode>(_ops)).Selector;
             return node => compiled(Enumerable.Repeat(node, 1));
         }
 

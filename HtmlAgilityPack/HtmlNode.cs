@@ -825,7 +825,7 @@ namespace HtmlAgilityPack
                 foreach (HtmlAttribute att in _attributes)
                 {
                     HtmlAttribute newatt = att.Clone();
-                    node.Attributes.Append(newatt);
+                    node.Attributes.Add(newatt);
                 }
             }
 
@@ -836,7 +836,7 @@ namespace HtmlAgilityPack
                 foreach (HtmlAttribute att in _endnode._attributes)
                 {
                     HtmlAttribute newatt = att.Clone();
-                    node._endnode._attributes.Append(newatt);
+                    node._endnode._attributes.Add(newatt);
                 }
             }
 
@@ -1429,7 +1429,7 @@ namespace HtmlAgilityPack
             HtmlAttribute att = Attributes[name];
             if (att == null)
             {
-                return Attributes.Append(_ownerdocument.CreateAttribute(name, value));
+                return Attributes.Add(_ownerdocument.CreateAttribute(name, value));
             }
             att.Value = value;
             return att;

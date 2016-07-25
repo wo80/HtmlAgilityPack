@@ -11,19 +11,19 @@ namespace HtmlAgilityPack.Fizzler
     /// <summary>
     /// Semantic parser for CSS selector grammar.
     /// </summary>
-    public sealed class Parser
+    public sealed class SelectorParser
     {
         private readonly Reader<Token> _reader;
         private readonly ISelectorGenerator _generator;
         private readonly bool _expectEoi;
 
-        private Parser(Reader<Token> reader, ISelectorGenerator generator)
+        private SelectorParser(Reader<Token> reader, ISelectorGenerator generator)
             : this(reader, generator, true)
         {
         }
 
 
-        private Parser(Reader<Token> reader, ISelectorGenerator generator, bool expectEoi)
+        private SelectorParser(Reader<Token> reader, ISelectorGenerator generator, bool expectEoi)
         {
             Debug.Assert(reader != null);
             Debug.Assert(generator != null);
@@ -50,7 +50,7 @@ namespace HtmlAgilityPack.Fizzler
             if (selectors == null) throw new ArgumentNullException("selectors");
             if (selectors.Length == 0) throw new ArgumentException(null, "selectors");
 
-            return Parse(Tokener.Tokenize(selectors), generator, resultor);
+            return Parse(Tokenizer.Tokenize(selectors), generator, resultor);
         }
 
         /// <summary>
@@ -73,7 +73,7 @@ namespace HtmlAgilityPack.Fizzler
             if (tokens == null) throw new ArgumentNullException("tokens");
             if (resultor == null) throw new ArgumentNullException("resultor");
 
-            new Parser(new Reader<Token>(tokens.GetEnumerator()), generator).Parse();
+            new SelectorParser(new Reader<Token>(tokens.GetEnumerator()), generator).Parse();
             return resultor(generator);
         }
 
@@ -375,7 +375,7 @@ namespace HtmlAgilityPack.Fizzler
         private ISelectorGenerator ParseSubGenerator()
         {
             var subgenerator = _generator.CreateNew();
-            var inner = new Parser(_reader, subgenerator, false);
+            var inner = new SelectorParser(_reader, subgenerator, false);
             inner.Parse();
             return subgenerator;
         }

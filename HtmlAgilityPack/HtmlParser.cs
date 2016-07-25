@@ -975,7 +975,7 @@ namespace HtmlAgilityPack
             // TODO: Attribute Name
             _currentattribute._namelength = index - _currentattribute._namestartindex;
             _currentattribute._name = Text.Substring(_currentattribute._namestartindex, _currentattribute._namelength);
-            _currentnode.Attributes.Append(_currentattribute);
+            _currentnode.Attributes.Add(_currentattribute);
         }
 
         private void PushAttributeNameStart(int index)

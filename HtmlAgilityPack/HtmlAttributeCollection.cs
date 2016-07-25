@@ -41,7 +41,7 @@ namespace HtmlAgilityPack
             }
             set
             {
-                Append(value);
+                Add(value);
             }
         }
 
@@ -105,7 +105,7 @@ namespace HtmlAgilityPack
         /// </summary>
         /// <param name="item">The attribute to insert. May not be null.</param>
         /// <returns>The appended attribute.</returns>
-        public HtmlAttribute Append(HtmlAttribute item)
+        public HtmlAttribute Add(HtmlAttribute item)
         {
             if (item == null)
             {
@@ -139,9 +139,9 @@ namespace HtmlAgilityPack
         /// </summary>
         /// <param name="name">The name of the attribute to insert.</param>
         /// <returns>The appended attribute.</returns>
-        public HtmlAttribute Append(string name)
+        public HtmlAttribute Add(string name)
         {
-            return Append(_ownernode._ownerdocument.CreateAttribute(name));
+            return Add(_ownernode._ownerdocument.CreateAttribute(name));
         }
 
         /// <summary>
@@ -150,9 +150,9 @@ namespace HtmlAgilityPack
         /// <param name="name">The name of the attribute to insert.</param>
         /// <param name="value">The value of the attribute to insert.</param>
         /// <returns>The appended attribute.</returns>
-        public HtmlAttribute Append(string name, string value)
+        public HtmlAttribute Add(string name, string value)
         {
-            return Append(_ownernode._ownerdocument.CreateAttribute(name, value));
+            return Add(_ownernode._ownerdocument.CreateAttribute(name, value));
         }
 
         /// <summary>
