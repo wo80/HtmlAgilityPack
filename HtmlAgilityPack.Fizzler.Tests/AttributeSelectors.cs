@@ -10,7 +10,7 @@ namespace HtmlAgilityPack.Fizzler.Tests
 		{
 			var results = SelectList("div[id]");
 			
-			Assert.AreEqual(2, results.Count);
+			Assert.AreEqual(3, results.Count);
 			Assert.AreEqual("div", results[0].Name);
 			Assert.AreEqual("div", results[1].Name);
 		}

@@ -159,7 +159,7 @@
             Debug.Assert(reader != null);
 
             reader.MarkFromNext(); // skipping #
-            while (IsNmChar(reader.Read())) { /* NOP */ }
+            while (IsNmHashChar(reader.Read())) { /* NOP */ }
             var text = reader.MarkedWithUnread();
             if (text.Length == 0)
                 throw new FormatException(string.Format("Invalid hash at position {0}.", reader.Position));
@@ -239,6 +239,11 @@
         private static bool IsNmChar(char? ch) // [_a-z0-9-]|{nonascii}|{escape}
         {
             return IsNmStart(ch) || ch == '-' || (ch >= '0' && ch <= '9');
+        }
+
+        private static bool IsNmHashChar(char? ch)
+        {
+            return IsNmStart(ch) || ch == '-' || (ch >= '0' && ch <= '9') || ch == ':';
         }
 
         private sealed class Reader

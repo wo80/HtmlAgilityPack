@@ -9,7 +9,7 @@
 		[Test]
 		public void Star()
 		{
-			Assert.AreEqual(18, SelectList("*").Count);
+			Assert.AreEqual(19, SelectList("*").Count);
 		}
 		
 		[Test]
