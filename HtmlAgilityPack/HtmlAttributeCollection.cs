@@ -119,7 +119,7 @@ namespace HtmlAgilityPack
             if (_names.TryGetValue(item.Name, out attribute))
             {
                 // Update attribute value;
-                attribute.Value = item.Value;
+                attribute._value = item._value;
 
                 // Return existing attribute.
                 return attribute;

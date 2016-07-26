@@ -7,7 +7,6 @@ namespace HtmlAgilityPack.Fizzler
 
     public class LRUCache<TInput, TResult> : IDisposable
     {
-
         private readonly Dictionary<TInput, TResult> data;
         private readonly IndexedLinkedList<TInput> lruList = new IndexedLinkedList<TInput>();
         private readonly Func<TInput, TResult> evalutor;
@@ -23,14 +22,6 @@ namespace HtmlAgilityPack.Fizzler
             this.capacity = capacity;
             this.evalutor = evalutor;
         }
-
-        private bool Remove(TInput key)
-        {
-            bool existed = data.Remove(key);
-            lruList.Remove(key);
-            return existed;
-        }
-
 
         public TResult GetValue(TInput key)
         {
@@ -65,7 +56,7 @@ namespace HtmlAgilityPack.Fizzler
 
                     if (data.Count > capacity)
                     {
-                        Remove(lruList.First);
+                        data.Remove(lruList.First);
                         lruList.RemoveFirst();
                     }
                 }
@@ -98,7 +89,7 @@ namespace HtmlAgilityPack.Fizzler
                     capacity = value;
                     while (data.Count > capacity)
                     {
-                        Remove(lruList.First);
+                        data.Remove(lruList.First);
                         lruList.RemoveFirst();
                     }
                 }
@@ -106,16 +97,25 @@ namespace HtmlAgilityPack.Fizzler
                 {
                     rwl.ExitWriteLock();
                 }
-
             }
         }
 
-
-
+        public void Dispose()
+        {
+            if (rwl == null) return;
+            try
+            {
+                rwl.Dispose();
+            }
+            catch (ObjectDisposedException)
+            {
+                // It should ignore duplicate calls to Dispose(), but it doesn't.
+            }
+            rwl = null;
+        }
 
         private class IndexedLinkedList<T>
         {
-
             private LinkedList<T> data = new LinkedList<T>();
             private Dictionary<T, LinkedListNode<T>> index = new Dictionary<T, LinkedListNode<T>>();
 
@@ -154,23 +154,5 @@ namespace HtmlAgilityPack.Fizzler
                 }
             }
         }
-
-
-        public void Dispose()
-        {
-            if (rwl == null) return;
-            try
-            {
-                rwl.Dispose();
-            }
-            catch (ObjectDisposedException)
-            {
-                // It should ignore duplicate calls to Dispose(), but it doesn't.
-            }
-            rwl = null;
-        }
     }
-
-
-
 }

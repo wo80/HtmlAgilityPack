@@ -83,7 +83,7 @@ namespace HtmlAgilityPack.Fizzler
                  ? (Selector<HtmlNode>)(nodes => Enumerable.Empty<HtmlNode>())
                  : (nodes => from n in nodes.Elements()
                              let a = n.Attributes[name]
-                             where a != null && a.Value.Split(' ').Contains(value)
+                             where a != null && a.Value.Split(splitter, StringSplitOptions.RemoveEmptyEntries).Contains(value)
                              select n);
         }
 

@@ -9,7 +9,7 @@
 		[Test]
 		public void Star()
 		{
-			Assert.AreEqual(16, SelectList("*").Count);
+			Assert.AreEqual(18, SelectList("*").Count);
 		}
 		
 		[Test]
@@ -22,7 +22,7 @@
 		[Test]
 		public void Single_Tag_Name_Matching_Multiple_Elements()
 		{
-			Assert.AreEqual(3, SelectList("p").Count);
+			Assert.AreEqual(4, SelectList("p").Count);
 			Assert.AreEqual("p", SelectList("p")[0].Name);
 			Assert.AreEqual("p", SelectList("p")[1].Name);
 			Assert.AreEqual("p", SelectList("p")[2].Name);
@@ -37,7 +37,7 @@
 		[Test]
 		public void Basic_Positive_Precedence_Two_Tags()
 		{
-			Assert.AreEqual(2, SelectList("div p").Count);
+			Assert.AreEqual(3, SelectList("div p").Count);
 		}
 
 		[Test]

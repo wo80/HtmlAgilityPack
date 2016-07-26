@@ -132,7 +132,7 @@ namespace HtmlAgilityPack.Fizzler.Tests
         public void Element_Attr_Not_Equal()
         {
             var results = SelectList("p[class!='hiclass']");
-            Assert.AreEqual(2, results.Count);
+            Assert.AreEqual(3, results.Count);
             Assert.IsNull(results[0].GetAttributeValue("class", null));
             Assert.AreEqual("eeeee", results[1].InnerText);
         }

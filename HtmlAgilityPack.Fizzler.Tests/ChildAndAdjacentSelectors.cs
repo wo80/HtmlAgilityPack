@@ -8,25 +8,25 @@ namespace HtmlAgilityPack.Fizzler.Tests
 		[Test]
 		public void Child_With_Pre_And_Post_Space()
 		{
-			Assert.AreEqual(2, SelectList("div > p").Count);
+			Assert.AreEqual(3, SelectList("div > p").Count);
 		}
 
 		[Test]
 		public void Child_With_Post_Space()
 		{
-			Assert.AreEqual(2, SelectList("div> p").Count);
+			Assert.AreEqual(3, SelectList("div> p").Count);
 		}
 
 		[Test]
 		public void Child_With_Pre_Space()
 		{
-			Assert.AreEqual(2, SelectList("div >p").Count);
+			Assert.AreEqual(3, SelectList("div >p").Count);
 		}
 
 		[Test]
 		public void Child_With_No_Space()
 		{
-			Assert.AreEqual(2, SelectList("div>p").Count);
+			Assert.AreEqual(3, SelectList("div>p").Count);
 		}
 
 		[Test]
@@ -77,7 +77,7 @@ namespace HtmlAgilityPack.Fizzler.Tests
 		[Test]
 		public void Comma_Child_And_Adjacent()
 		{
-			Assert.AreEqual(3, SelectList("a + span, div > p").Count);
+			Assert.AreEqual(4, SelectList("a + span, div > p").Count);
 		}
 
 		[Test]
